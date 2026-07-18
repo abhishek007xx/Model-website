@@ -2,6 +2,8 @@ import { Navbar } from "@/components/portfolio/navbar";
 import { Hero } from "@/components/portfolio/hero";
 import { About } from "@/components/portfolio/about";
 import { Stats } from "@/components/portfolio/stats";
+import { GalleryIntro } from "@/components/portfolio/gallery-intro";
+import { HorizontalGallery } from "@/components/portfolio/horizontal-gallery";
 import { Gallery } from "@/components/portfolio/gallery";
 import { Experience } from "@/components/portfolio/experience";
 import { Services } from "@/components/portfolio/services";
@@ -18,6 +20,9 @@ export default function Home() {
         <Marquee variant="dark" duration={36} />
         <About />
         <Stats />
+        {/* Cinematic gallery experience — intro → filmstrip → collage */}
+        <GalleryIntro />
+        <HorizontalGallery />
         <Gallery />
         <Experience />
         <Services />
