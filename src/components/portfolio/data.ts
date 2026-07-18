@@ -1,0 +1,162 @@
+// =====================================================================
+//  MIZUHARA — Portfolio Content
+// ---------------------------------------------------------------------
+//  Edit this file to update text, stats, and images on the site.
+//
+//  >>> HOW TO REPLACE THE PLACEHOLDER PHOTOS WITH MIZUHARA'S REAL PHOTOS
+//  1. Drop your photos into:  /public/portfolio/
+//  2. Either:
+//       • name them the SAME as the files below (hero.jpg, gallery-1.jpg…)
+//         and overwrite the placeholders, OR
+//       • put them with any name and update the `src` values below.
+//  The gallery will automatically use whatever paths are listed here.
+// =====================================================================
+
+export const MODEL = {
+  name: "Mizuhara",
+  fullName: "Mizuhara",
+  tagline: "International Fashion Model",
+  location: "Tokyo · Paris · New York",
+  email: "booking@mizuhara.model",
+  phone: "+1 (212) 555-0148",
+  instagram: "@mizuhara",
+  agency: "Elite Management",
+  // Hero
+  heroImage: "/portfolio/hero.jpg",
+  heroIntro:
+    "Editorial muse. Runway presence. A face that frames a story — Mizuhara moves between couture, campaign, and cinema with quiet command.",
+};
+
+export const ABOUT = {
+  image: "/portfolio/about.jpg",
+  heading: "About",
+  paragraphs: [
+    "Mizuhara is an international fashion model known for an editorial sensibility that is at once modern and timeless. With a gaze that holds the lens and a presence that translates across cultures, she has become a sought-after face for houses that value restraint and character over noise.",
+    "Her work spans print editorials, global campaigns, and the runway — a practice built on discipline, curiosity, and a genuine love for the craft of image-making. Every frame is a conversation between the garment, the light, and the woman wearing it.",
+  ],
+  highlights: [
+    "8+ years in the industry",
+    "Worked across 4 continents",
+    "Featured in 30+ editorials",
+    "Fluent in 3 languages",
+  ],
+};
+
+// Comp-card vital statistics (edit freely)
+export const VITAL_STATS: { label: string; value: string }[] = [
+  { label: "Height", value: "178 cm" },
+  { label: "Bust", value: "82 cm" },
+  { label: "Waist", value: "60 cm" },
+  { label: "Hips", value: "89 cm" },
+  { label: "Hair", value: "Dark Brown" },
+  { label: "Eyes", value: "Brown" },
+  { label: "Shoes", value: "39 EU" },
+  { label: "Dress", value: "34 EU" },
+];
+
+// Gallery — each item is one image with a caption + category
+export const GALLERY: {
+  src: string;
+  title: string;
+  category: string;
+  tall?: boolean;
+}[] = [
+  {
+    src: "/portfolio/gallery-1.jpg",
+    title: "Quiet Strength",
+    category: "Editorial",
+    tall: true,
+  },
+  {
+    src: "/portfolio/gallery-2.jpg",
+    title: "Beauty Study",
+    category: "Beauty",
+  },
+  {
+    src: "/portfolio/gallery-3.jpg",
+    title: "Couture Moment",
+    category: "Runway",
+    tall: true,
+  },
+  {
+    src: "/portfolio/gallery-4.jpg",
+    title: "Linen & Light",
+    category: "Editorial",
+  },
+  {
+    src: "/portfolio/gallery-5.jpg",
+    title: "Golden Hour",
+    category: "Campaign",
+  },
+  {
+    src: "/portfolio/gallery-6.jpg",
+    title: "Noir",
+    category: "Editorial",
+    tall: true,
+  },
+];
+
+// Experience — publications & houses she has worked with
+export const CREDITS: { publications: string[]; houses: string[] } = {
+  publications: [
+    "Vogue",
+    "Harper's Bazaar",
+    "Elle",
+    "Numéro",
+    "W Magazine",
+    "i-D",
+    "Dazed",
+    "Marie Claire",
+  ],
+  houses: [
+    "Chanel",
+    "Dior",
+    "Louis Vuitton",
+    "Prada",
+    "Valentino",
+    "Saint Laurent",
+    "Givenchy",
+    "Loewe",
+  ],
+};
+
+// Services she offers
+export const SERVICES: {
+  icon: string;
+  title: string;
+  description: string;
+}[] = [
+  {
+    icon: "Camera",
+    title: "Editorial",
+    description:
+      "Magazine editorials, covers, and artistic collaborations with photographers and creative directors worldwide.",
+  },
+  {
+    icon: "Footprints",
+    title: "Runway",
+    description:
+      "Fashion week appearances for couture and ready-to-wear houses — show openings, closings, and exclusives.",
+  },
+  {
+    icon: "Sparkles",
+    title: "Campaign",
+    description:
+      "Global brand campaigns across beauty, fashion, and lifestyle — print, film, and digital.",
+  },
+  {
+    icon: "Clapperboard",
+    title: "Film & Motion",
+    description:
+      "Short films, brand films, and motion editorials that extend a story beyond the still frame.",
+  },
+];
+
+export const NAV_LINKS: { label: string; href: string }[] = [
+  { label: "About", href: "#about" },
+  { label: "Stats", href: "#stats" },
+  { label: "Portfolio", href: "#portfolio" },
+  { label: "Experience", href: "#experience" },
+  { label: "Services", href: "#services" },
+  { label: "Contact", href: "#contact" },
+];
