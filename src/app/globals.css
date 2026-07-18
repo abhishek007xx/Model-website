@@ -6,6 +6,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-champagne: var(--champagne);
   --font-sans: var(--font-geist-sans);
   --font-serif: var(--font-playfair);
   --font-mono: var(--font-geist-mono);
@@ -155,9 +158,6 @@
 
   .text-champagne { color: var(--champagne); }
   .bg-champagne { background-color: var(--champagne); }
-  .bg-ink { background-color: var(--ink); }
-  .bg-paper { background-color: var(--paper); }
-  .border-ink { border-color: var(--ink); }
 
   /* Film grain overlay */
   .grain::before {
