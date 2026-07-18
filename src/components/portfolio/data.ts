@@ -21,24 +21,32 @@ export const MODEL = {
   phone: "+1 (212) 555-0148",
   instagram: "@mizuhara",
   agency: "Elite Management",
-  // Hero
-  heroImage: "/portfolio/hero.jpg",
+  // Hero collage images
+  heroMain: "/portfolio/hero.jpg",
+  heroCloseup: "/portfolio/gallery-2.jpg",
+  heroAlt: "/portfolio/gallery-4.jpg",
   heroIntro:
     "Editorial muse. Runway presence. A face that frames a story — Mizuhara moves between couture, campaign, and cinema with quiet command.",
+  // Editorial metadata (magazine-style credits)
+  issue: "N° 01",
+  season: "SS / 25",
+  shotBy: "Studio Archive",
+  shotAt: "Paris",
 };
 
 export const ABOUT = {
   image: "/portfolio/about.jpg",
+  secondary: "/portfolio/gallery-1.jpg",
   heading: "About",
   paragraphs: [
     "Mizuhara is an international fashion model known for an editorial sensibility that is at once modern and timeless. With a gaze that holds the lens and a presence that translates across cultures, she has become a sought-after face for houses that value restraint and character over noise.",
     "Her work spans print editorials, global campaigns, and the runway — a practice built on discipline, curiosity, and a genuine love for the craft of image-making. Every frame is a conversation between the garment, the light, and the woman wearing it.",
   ],
   highlights: [
-    "8+ years in the industry",
-    "Worked across 4 continents",
-    "Featured in 30+ editorials",
-    "Fluent in 3 languages",
+    { value: "08+", label: "Years in industry" },
+    { value: "04", label: "Continents" },
+    { value: "32", label: "Editorials" },
+    { value: "03", label: "Languages" },
   ],
 };
 
@@ -54,7 +62,7 @@ export const VITAL_STATS: { label: string; value: string }[] = [
   { label: "Dress", value: "34 EU" },
 ];
 
-// Gallery — each item is one image with a caption + category
+// Gallery — each item is one image with a caption + category + number
 export const GALLERY: {
   src: string;
   title: string;

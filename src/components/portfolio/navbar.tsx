@@ -28,17 +28,17 @@ export function Navbar() {
       className={cn(
         "fixed top-0 inset-x-0 z-50 transition-all duration-500",
         scrolled
-          ? "bg-background/85 backdrop-blur-md border-b border-border/60 py-3"
+          ? "bg-paper/85 backdrop-blur-md border-b border-ink/15 py-3"
           : "bg-transparent py-5"
       )}
     >
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 sm:px-8">
+      <nav className="mx-auto flex max-w-[1600px] items-center justify-between px-5 sm:px-8">
         <a
           href="#top"
-          className="font-serif text-xl sm:text-2xl font-semibold tracking-tight text-foreground"
+          className="font-serif text-xl sm:text-2xl font-semibold tracking-tight text-ink"
         >
           {MODEL.name}
-          <span className="text-accent-foreground/40">.</span>
+          <span className="text-champagne">.</span>
         </a>
 
         {/* Desktop nav */}
@@ -47,10 +47,10 @@ export function Navbar() {
             <li key={l.href}>
               <a
                 href={l.href}
-                className="group relative text-[0.7rem] uppercase tracking-wide-2 text-muted-foreground transition-colors hover:text-foreground"
+                className="group relative font-sans text-[0.65rem] uppercase tracking-wide-2 text-ink/60 transition-colors hover:text-ink"
               >
                 {l.label}
-                <span className="absolute -bottom-1.5 left-0 h-px w-0 bg-foreground transition-all duration-300 group-hover:w-full" />
+                <span className="absolute -bottom-1.5 left-0 h-px w-0 bg-ink transition-all duration-300 group-hover:w-full" />
               </a>
             </li>
           ))}
@@ -61,7 +61,7 @@ export function Navbar() {
             asChild
             size="sm"
             variant="outline"
-            className="rounded-full border-foreground/30 text-[0.7rem] uppercase tracking-wide-2 hover:bg-foreground hover:text-background"
+            className="rounded-full border-ink/30 font-sans text-[0.6rem] uppercase tracking-wide-2 text-ink hover:bg-ink hover:text-paper"
           >
             <a href="#contact">Book</a>
           </Button>
@@ -75,34 +75,40 @@ export function Navbar() {
                 variant="ghost"
                 size="icon"
                 aria-label="Open menu"
-                className="text-foreground"
+                className="text-ink"
               >
                 <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="w-full max-w-sm border-l border-border bg-background p-0"
+              className="w-full max-w-sm border-l border-ink/15 bg-paper p-0"
             >
-              <div className="flex items-center justify-between px-6 py-5 border-b border-border">
-                <span className="font-serif text-xl font-semibold">
+              <div className="flex items-center justify-between border-b border-ink/15 px-6 py-5">
+                <span className="font-serif text-xl font-semibold text-ink">
                   {MODEL.name}
+                  <span className="text-champagne">.</span>
                 </span>
                 <SheetClose asChild>
-                  <Button variant="ghost" size="icon" aria-label="Close menu">
+                  <Button variant="ghost" size="icon" aria-label="Close menu" className="text-ink">
                     <X className="h-5 w-5" />
                   </Button>
                 </SheetClose>
               </div>
               <ul className="flex flex-col px-2 py-4">
-                {NAV_LINKS.map((l) => (
+                {NAV_LINKS.map((l, i) => (
                   <li key={l.href}>
                     <SheetClose asChild>
                       <a
                         href={l.href}
-                        className="block px-6 py-4 font-serif text-2xl text-foreground transition-colors hover:bg-accent"
+                        className="flex items-baseline justify-between px-6 py-4 transition-colors hover:bg-accent/40"
                       >
-                        {l.label}
+                        <span className="font-serif text-2xl text-ink">
+                          {l.label}
+                        </span>
+                        <span className="font-sans text-[0.55rem] uppercase tracking-wide-2 text-ink/40">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
                       </a>
                     </SheetClose>
                   </li>
@@ -112,13 +118,13 @@ export function Navbar() {
                 <SheetClose asChild>
                   <Button
                     asChild
-                    className="w-full rounded-full bg-foreground text-background hover:bg-foreground/90"
+                    className="w-full rounded-full bg-ink font-sans text-[0.65rem] uppercase tracking-wide-2 text-paper hover:bg-ink/85"
                   >
                     <a href="#contact">Book Mizuhara</a>
                   </Button>
                 </SheetClose>
               </div>
-              <div className="mt-auto px-6 py-6 text-xs uppercase tracking-wide-2 text-muted-foreground">
+              <div className="mt-auto px-6 py-6 font-sans text-[0.55rem] uppercase tracking-wide-2 text-ink/50">
                 {MODEL.location}
               </div>
             </SheetContent>

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Mail, Phone, Instagram, MapPin, Loader2, Check } from "lucide-react";
+import { Mail, Phone, Instagram, MapPin, Loader2, Check, ArrowUpRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -78,22 +78,30 @@ export function Contact() {
   return (
     <section
       id="contact"
-      className="relative overflow-hidden bg-foreground py-24 text-background sm:py-32"
+      className="grain relative overflow-hidden bg-ink py-24 text-paper sm:py-32"
     >
-      <div className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:48px_48px]" />
-      <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
+      <div className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:64px_64px]" />
+      <div className="relative mx-auto max-w-[1600px] px-5 sm:px-8">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
           {/* Left — info */}
           <div className="lg:col-span-5">
+            <div className="mb-6 flex items-center justify-between border-b border-paper/15 pb-4">
+              <span className="font-sans text-[0.6rem] uppercase tracking-luxe text-paper/50">
+                Contact — 06
+              </span>
+              <span className="font-sans text-[0.6rem] uppercase tracking-wide-2 text-paper/50">
+                {MODEL.issue}
+              </span>
+            </div>
             <SectionHeading
-              eyebrow="Contact"
+              eyebrow="Booking"
               title="Book Mizuhara"
-              className="text-background"
+              className="text-paper"
             />
             <Reveal delay={0.1}>
-              <p className="mt-6 max-w-md text-background/70">
-                For editorial, runway, campaign, and film enquiries, please
-                share your project details below. All bookings are coordinated
+              <p className="mt-6 max-w-md text-paper/70">
+                For editorial, runway, campaign, and film enquiries, share
+                your project details below. All bookings are coordinated
                 through {MODEL.agency}.
               </p>
             </Reveal>
@@ -127,19 +135,22 @@ export function Contact() {
                 <Reveal key={c.label} delay={0.15 + i * 0.06}>
                   <a
                     href={c.href ?? undefined}
-                    className="group flex items-center gap-4"
+                    className="group flex items-center justify-between border-b border-paper/10 pb-4"
                   >
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-background/20 transition-colors group-hover:bg-background group-hover:text-foreground">
-                      <c.icon className="h-4 w-4" />
-                    </span>
-                    <span className="flex flex-col">
-                      <span className="text-[0.6rem] uppercase tracking-luxe text-background/50">
-                        {c.label}
+                    <span className="flex items-center gap-4">
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-paper/25 transition-colors group-hover:bg-paper group-hover:text-ink">
+                        <c.icon className="h-4 w-4" />
                       </span>
-                      <span className="text-background transition-opacity group-hover:opacity-70">
-                        {c.value}
+                      <span className="flex flex-col">
+                        <span className="font-sans text-[0.55rem] uppercase tracking-wide-2 text-paper/45">
+                          {c.label}
+                        </span>
+                        <span className="font-serif text-lg text-paper transition-opacity group-hover:opacity-70">
+                          {c.value}
+                        </span>
                       </span>
                     </span>
+                    <ArrowUpRight className="h-4 w-4 text-paper/40 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-paper" />
                   </a>
                 </Reveal>
               ))}
@@ -150,18 +161,18 @@ export function Contact() {
           <div className="lg:col-span-7">
             <Reveal delay={0.1}>
               {submitted ? (
-                <div className="flex h-full min-h-[420px] flex-col items-center justify-center rounded-sm border border-background/15 p-10 text-center">
-                  <span className="flex h-16 w-16 items-center justify-center rounded-full bg-background text-foreground">
+                <div className="flex h-full min-h-[460px] flex-col items-center justify-center rounded-sm border border-paper/15 p-10 text-center">
+                  <span className="flex h-16 w-16 items-center justify-center rounded-full bg-paper text-ink">
                     <Check className="h-7 w-7" />
                   </span>
                   <h3 className="mt-6 font-serif text-3xl">Thank you</h3>
-                  <p className="mt-3 max-w-sm text-background/70">
+                  <p className="mt-3 max-w-sm text-paper/70">
                     Your booking request has been received. The agency will
                     respond within 48 hours.
                   </p>
                   <Button
                     variant="outline"
-                    className="mt-8 rounded-full border-background/40 text-background hover:bg-background hover:text-foreground"
+                    className="mt-8 rounded-full border-paper/40 text-paper hover:bg-paper hover:text-ink"
                     onClick={() => setSubmitted(false)}
                   >
                     Send another request
@@ -170,7 +181,7 @@ export function Contact() {
               ) : (
                 <form
                   onSubmit={handleSubmit(onSubmit)}
-                  className="space-y-6 rounded-sm border border-background/15 bg-background/[0.03] p-6 backdrop-blur-sm sm:p-8"
+                  className="space-y-6 rounded-sm border border-paper/15 bg-paper/[0.03] p-6 backdrop-blur-sm sm:p-8"
                   noValidate
                 >
                   <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -178,7 +189,7 @@ export function Contact() {
                       <Input
                         {...register("name")}
                         placeholder="Your name"
-                        className="border-background/20 bg-transparent text-background placeholder:text-background/40 focus-visible:border-background"
+                        className="border-paper/20 bg-transparent text-paper placeholder:text-paper/35 focus-visible:border-paper"
                       />
                     </Field>
                     <Field label="Email" error={errors.email?.message}>
@@ -186,7 +197,7 @@ export function Contact() {
                         type="email"
                         {...register("email")}
                         placeholder="you@studio.com"
-                        className="border-background/20 bg-transparent text-background placeholder:text-background/40 focus-visible:border-background"
+                        className="border-paper/20 bg-transparent text-paper placeholder:text-paper/35 focus-visible:border-paper"
                       />
                     </Field>
                   </div>
@@ -196,7 +207,7 @@ export function Contact() {
                       <Input
                         {...register("company")}
                         placeholder="Vogue, Chanel, …"
-                        className="border-background/20 bg-transparent text-background placeholder:text-background/40 focus-visible:border-background"
+                        className="border-paper/20 bg-transparent text-paper placeholder:text-paper/35 focus-visible:border-paper"
                       />
                     </Field>
                     <Field
@@ -205,13 +216,13 @@ export function Contact() {
                     >
                       <select
                         {...register("projectType")}
-                        className="h-10 w-full rounded-md border border-background/20 bg-transparent px-3 text-background focus:outline-none focus-visible:border-background"
+                        className="h-10 w-full rounded-md border border-paper/20 bg-transparent px-3 text-paper focus:outline-none focus-visible:border-paper"
                       >
-                        <option value="" className="bg-foreground">
+                        <option value="" className="bg-ink">
                           Select…
                         </option>
                         {PROJECT_TYPES.map((p) => (
-                          <option key={p} value={p} className="bg-foreground">
+                          <option key={p} value={p} className="bg-ink">
                             {p}
                           </option>
                         ))}
@@ -223,7 +234,7 @@ export function Contact() {
                     <Input
                       type="date"
                       {...register("date")}
-                      className="border-background/20 bg-transparent text-background placeholder:text-background/40 focus-visible:border-background [color-scheme:dark]"
+                      className="border-paper/20 bg-transparent text-paper placeholder:text-paper/35 focus-visible:border-paper [color-scheme:dark]"
                     />
                   </Field>
 
@@ -232,14 +243,14 @@ export function Contact() {
                       {...register("message")}
                       rows={5}
                       placeholder="Tell us about the project, location, dates, and budget…"
-                      className="resize-none border-background/20 bg-transparent text-background placeholder:text-background/40 focus-visible:border-background"
+                      className="resize-none border-paper/20 bg-transparent text-paper placeholder:text-paper/35 focus-visible:border-paper"
                     />
                   </Field>
 
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full rounded-full bg-background py-6 text-sm uppercase tracking-wide-2 text-foreground hover:bg-background/90 disabled:opacity-60"
+                    className="w-full rounded-full bg-paper py-6 font-sans text-[0.65rem] uppercase tracking-wide-2 text-ink hover:bg-paper/90 disabled:opacity-60"
                   >
                     {isSubmitting ? (
                       <>
@@ -273,9 +284,9 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-[0.65rem] uppercase tracking-luxe text-background/60">
+      <span className="mb-2 block font-sans text-[0.55rem] uppercase tracking-wide-2 text-paper/55">
         {label}
-        {required && <span className="text-background/40"> *</span>}
+        {required && <span className="text-paper/30"> *</span>}
       </span>
       {children}
       {error && (

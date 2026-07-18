@@ -46,23 +46,26 @@ export function SectionHeading({
   align?: "left" | "center";
   className?: string;
 }) {
+  // Colors inherit from the parent via `currentColor`, so passing a
+  // text color (e.g. text-paper) on `className` recolors both the
+  // eyebrow and the heading consistently — useful on dark sections.
   return (
     <div
       className={
-        align === "center"
-          ? "flex flex-col items-center text-center " + (className ?? "")
-          : "flex flex-col items-start " + (className ?? "")
+        (align === "center"
+          ? "flex flex-col items-center text-center "
+          : "flex flex-col items-start ") + (className ?? "")
       }
     >
       {eyebrow && (
         <Reveal>
-          <span className="mb-4 text-[0.7rem] uppercase tracking-luxe text-muted-foreground">
+          <span className="mb-4 font-sans text-[0.6rem] uppercase tracking-luxe text-current opacity-50">
             {eyebrow}
           </span>
         </Reveal>
       )}
       <Reveal delay={0.05}>
-        <h2 className="font-serif text-4xl font-semibold tracking-tight text-foreground sm:text-5xl md:text-6xl text-balance">
+        <h2 className="font-serif text-4xl font-medium tracking-tight text-current sm:text-5xl md:text-6xl text-balance">
           {title}
         </h2>
       </Reveal>

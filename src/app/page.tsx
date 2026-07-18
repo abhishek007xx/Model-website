@@ -7,13 +7,15 @@ import { Experience } from "@/components/portfolio/experience";
 import { Services } from "@/components/portfolio/services";
 import { Contact } from "@/components/portfolio/contact";
 import { SiteFooter } from "@/components/portfolio/site-footer";
+import { Marquee } from "@/components/portfolio/marquee";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col bg-paper">
       <Navbar />
       <main className="flex-1">
         <Hero />
+        <Marquee variant="dark" duration={36} />
         <About />
         <Stats />
         <Gallery />
