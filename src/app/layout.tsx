@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { SmoothScrollProvider } from "@/components/portfolio/smooth-scroll-provider";
+import { CursorFollower } from "@/components/portfolio/cursor-follower";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,8 +59,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${playfair.variable} antialiased bg-background text-foreground`}
       >
-        {children}
-        <Toaster />
+        <SmoothScrollProvider>
+          <CursorFollower />
+          {children}
+          <Toaster />
+        </SmoothScrollProvider>
       </body>
     </html>
   );

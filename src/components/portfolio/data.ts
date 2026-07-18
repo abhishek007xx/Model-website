@@ -62,46 +62,29 @@ export const VITAL_STATS: { label: string; value: string }[] = [
   { label: "Dress", value: "34 EU" },
 ];
 
-// Gallery — each item is one image with a caption + category + number
-export const GALLERY: {
+// Gallery — each item is one image with a caption + category + number.
+// `aspect` controls the cinematic pacing of the asymmetric layout:
+//   "tall"  = 3/4 portrait,  "square" = 1/1,  "wide" = 16/9,  "std" = 4/5
+export type GalleryItem = {
   src: string;
   title: string;
   category: string;
-  tall?: boolean;
-}[] = [
-  {
-    src: "/portfolio/gallery-1.jpg",
-    title: "Quiet Strength",
-    category: "Editorial",
-    tall: true,
-  },
-  {
-    src: "/portfolio/gallery-2.jpg",
-    title: "Beauty Study",
-    category: "Beauty",
-  },
-  {
-    src: "/portfolio/gallery-3.jpg",
-    title: "Couture Moment",
-    category: "Runway",
-    tall: true,
-  },
-  {
-    src: "/portfolio/gallery-4.jpg",
-    title: "Linen & Light",
-    category: "Editorial",
-  },
-  {
-    src: "/portfolio/gallery-5.jpg",
-    title: "Golden Hour",
-    category: "Campaign",
-  },
-  {
-    src: "/portfolio/gallery-6.jpg",
-    title: "Noir",
-    category: "Editorial",
-    tall: true,
-  },
+  aspect: "tall" | "square" | "wide" | "std";
+};
+
+export const GALLERY: GalleryItem[] = [
+  { src: "/portfolio/gallery-1.jpg", title: "Quiet Strength", category: "Editorial", aspect: "tall" },
+  { src: "/portfolio/gallery-2.jpg", title: "Beauty Study",   category: "Beauty",    aspect: "square" },
+  { src: "/portfolio/gallery-3.jpg", title: "Couture Moment", category: "Runway",    aspect: "tall" },
+  { src: "/portfolio/gallery-4.jpg", title: "Linen & Light",  category: "Editorial", aspect: "std" },
+  { src: "/portfolio/gallery-5.jpg", title: "Golden Hour",    category: "Campaign",  aspect: "square" },
+  { src: "/portfolio/gallery-6.jpg", title: "Noir",           category: "Editorial", aspect: "tall" },
+  { src: "/portfolio/gallery-7.jpg", title: "Reverie",        category: "Editorial", aspect: "wide" },
+  { src: "/portfolio/gallery-8.jpg", title: "Touch",          category: "Beauty",    aspect: "square" },
+  { src: "/portfolio/gallery-9.jpg", title: "In Motion",      category: "Runway",    aspect: "tall" },
+  { src: "/portfolio/gallery-10.jpg", title: "Terracotta",    category: "Campaign",  aspect: "std" },
+  { src: "/portfolio/gallery-11.jpg", title: "Detail",        category: "Beauty",    aspect: "square" },
+  { src: "/portfolio/gallery-12.jpg", title: "Silhouette",    category: "Editorial", aspect: "tall" },
 ];
 
 // Experience — publications & houses she has worked with

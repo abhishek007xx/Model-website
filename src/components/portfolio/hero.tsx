@@ -1,204 +1,296 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { ArrowDown, ArrowUpRight } from "lucide-react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ArrowUpRight, ArrowDown } from "lucide-react";
 import { MODEL } from "./data";
+import { SplitText } from "./split-text";
+import { Magnetic } from "./magnetic";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export function Hero() {
+  const root = useRef<HTMLDivElement>(null);
+  const bgImg = useRef<HTMLDivElement>(null);
+  const fgCloseup = useRef<HTMLDivElement>(null);
+  const fgAlt = useRef<HTMLDivElement>(null);
+  const wordmark = useRef<HTMLHeadingElement>(null);
+  const tiltWrap = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    const reduce =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const ctx = gsap.context(() => {
+      if (reduce) return;
+
+      // 1. Slow cinematic Ken Burns zoom on the background image.
+      gsap.fromTo(
+        bgImg.current,
+        { scale: 1.12 },
+        {
+          scale: 1.22,
+          duration: 14,
+          ease: "none",
+          scrollTrigger: {
+            trigger: el,
+            start: "top top",
+            end: "bottom top",
+            scrub: 1.2,
+          },
+        }
+      );
+
+      // 2. Foreground parallax — close-up drifts up slower, alt drifts faster.
+      gsap.to(fgCloseup.current, {
+        yPercent: -28,
+        ease: "none",
+        scrollTrigger: {
+          trigger: el,
+          start: "top top",
+          end: "bottom top",
+          scrub: 1.5,
+        },
+      });
+      gsap.to(fgAlt.current, {
+        yPercent: -55,
+        ease: "none",
+        scrollTrigger: {
+          trigger: el,
+          start: "top top",
+          end: "bottom top",
+          scrub: 1.8,
+        },
+      });
+
+      // 3. Giant outline wordmark drifts up + fades as you scroll (depth).
+      gsap.to(wordmark.current, {
+        yPercent: -40,
+        opacity: 0.15,
+        ease: "none",
+        scrollTrigger: {
+          trigger: el,
+          start: "top top",
+          end: "bottom top",
+          scrub: 1,
+        },
+      });
+
+      // 4. Whole hero fades + scales slightly on scroll for a cinematic exit.
+      gsap.to(tiltWrap.current, {
+        opacity: 0,
+        scale: 0.96,
+        ease: "none",
+        scrollTrigger: {
+          trigger: el,
+          start: "top top",
+          end: "70% top",
+          scrub: 1,
+        },
+      });
+    }, el);
+
+    // 5. Mouse perspective tilt — extremely subtle, GPU only.
+    const onMove = (e: MouseEvent) => {
+      if (reduce) return;
+      const w = tiltWrap.current;
+      if (!w) return;
+      const rect = w.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width - 0.5;
+      const py = (e.clientY - rect.top) / rect.height - 0.5;
+      gsap.to(w, {
+        rotateY: px * 3,
+        rotateX: -py * 3,
+        transformPerspective: 1200,
+        transformOrigin: "center",
+        duration: 1.2,
+        ease: "power2.out",
+      });
+      // parallax layers move opposite amounts
+      gsap.to(bgImg.current, { x: px * -14, y: py * -10, duration: 1.2, ease: "power2.out" });
+      gsap.to(fgCloseup.current, { x: px * 18, y: py * 14, duration: 1.2, ease: "power2.out" });
+      gsap.to(fgAlt.current, { x: px * 28, y: py * 22, duration: 1.2, ease: "power2.out" });
+      gsap.to(wordmark.current, { x: px * -22, y: py * -12, duration: 1.4, ease: "power2.out" });
+    };
+    window.addEventListener("mousemove", onMove);
+
+    return () => {
+      ctx.revert();
+      window.removeEventListener("mousemove", onMove);
+    };
+  }, []);
+
   return (
     <section
       id="top"
-      className="relative grain overflow-hidden bg-paper pt-24 sm:pt-28"
+      ref={root}
+      className="mesh-bg grain relative h-[100svh] min-h-[640px] w-full overflow-hidden"
     >
-      {/* Top meta strip — editorial issue info */}
-      <div className="relative z-20 mx-auto flex max-w-[1600px] items-center justify-between border-b border-ink/15 px-5 py-3 sm:px-8">
-        <span className="font-sans text-[0.6rem] uppercase tracking-wide-2 text-ink/70">
-          {MODEL.issue} · {MODEL.season}
-        </span>
-        <span className="hidden font-sans text-[0.6rem] uppercase tracking-wide-2 text-ink/70 sm:block">
-          The Portfolio Edition
-        </span>
-        <span className="font-sans text-[0.6rem] uppercase tracking-wide-2 text-ink/70">
-          {MODEL.location}
-        </span>
-      </div>
-
-      {/* Collage stage */}
-      <div className="relative mx-auto max-w-[1600px] px-5 pb-16 pt-10 sm:px-8 sm:pb-24 sm:pt-14">
-        {/* Giant outline wordmark BEHIND everything */}
-        <motion.h1
-          aria-hidden="true"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-          className="pointer-events-none absolute inset-x-0 top-6 z-0 select-none text-center font-serif text-[26vw] font-semibold leading-none tracking-display text-outline sm:top-10 sm:text-[22vw]"
-          style={{
-            WebkitTextStrokeWidth: "1.5px",
-          }}
-        >
-          MIZUHARA
-        </motion.h1>
-
-        <div className="relative z-10 grid grid-cols-12 gap-3 sm:gap-4">
-          {/* Left rail — small close-up + caption (overlapping) */}
-          <motion.div
-            initial={{ opacity: 0, x: -24 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="col-span-5 mt-24 sm:col-span-4 sm:mt-44 lg:col-span-3 lg:mt-52"
-          >
-            <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted shadow-collage">
-              <Image
-                src={MODEL.heroCloseup}
-                alt={`${MODEL.name} close-up`}
-                fill
-                sizes="(max-width: 640px) 45vw, 25vw"
-                className="object-cover object-center"
-              />
-              <span className="absolute left-2 top-2 font-sans text-[0.55rem] uppercase tracking-wide-2 text-white/90">
-                #001
-              </span>
-            </div>
-            <div className="mt-3 flex items-center justify-between font-sans text-[0.55rem] uppercase tracking-wide-2 text-ink/60">
-              <span>Close-up</span>
-              <span>Shot. {MODEL.shotBy}</span>
-            </div>
-          </motion.div>
-
-          {/* Center — main hero portrait */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-            className="relative col-span-7 sm:col-span-5 sm:col-start-5 lg:col-span-4 lg:col-start-5"
-          >
-            <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted shadow-collage">
-              <Image
-                src={MODEL.heroMain}
-                alt={`${MODEL.name} — ${MODEL.tagline}`}
-                fill
-                priority
-                sizes="(max-width: 640px) 60vw, 35vw"
-                className="object-cover object-center"
-              />
-              {/* bottom gradient + name plate */}
-              <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-4 sm:p-5">
-                <div>
-                  <p className="font-sans text-[0.55rem] uppercase tracking-luxe text-white/70">
-                    Cover Story
-                  </p>
-                  <p className="font-serif text-2xl font-medium text-white sm:text-3xl">
-                    {MODEL.name}
-                  </p>
-                </div>
-                <span className="font-sans text-[0.55rem] uppercase tracking-wide-2 text-white/70">
-                  #002
-                </span>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Right rail — secondary portrait + meta */}
-          <motion.div
-            initial={{ opacity: 0, x: 24 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="col-span-12 mt-6 sm:col-span-3 sm:col-start-10 sm:mt-24 lg:col-span-3 lg:col-start-10 lg:mt-52"
-          >
-            <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted shadow-collage">
-              <Image
-                src={MODEL.heroAlt}
-                alt={`${MODEL.name} editorial`}
-                fill
-                sizes="(max-width: 640px) 100vw, 22vw"
-                className="object-cover object-center"
-              />
-              <span className="absolute left-2 top-2 font-sans text-[0.55rem] uppercase tracking-wide-2 text-white/90">
-                #003
-              </span>
-            </div>
-
-            {/* editorial meta block */}
-            <div className="mt-4 space-y-2 border-t border-ink/20 pt-4">
-              {[
-                ["Location", MODEL.shotAt],
-                ["Photographer", MODEL.shotBy],
-                ["Represented", MODEL.agency],
-              ].map(([k, v]) => (
-                <div
-                  key={k}
-                  className="flex items-baseline justify-between gap-3"
-                >
-                  <span className="font-sans text-[0.55rem] uppercase tracking-wide-2 text-ink/50">
-                    {k}
-                  </span>
-                  <span className="text-right font-serif text-sm italic text-ink">
-                    {v}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+      {/* Background hero image with slow zoom + parallax */}
+      <div
+        ref={tiltWrap}
+        className="gpu absolute inset-0"
+        style={{ transformStyle: "preserve-3d" }}
+      >
+        <div ref={bgImg} className="gpu absolute inset-0">
+          <Image
+            src={MODEL.heroMain}
+            alt={`${MODEL.name} — ${MODEL.tagline}`}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+          {/* cinematic depth: vignette + gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/35 to-ink/55" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,oklch(0.14_0.006_50/0.7)_100%)]" />
         </div>
 
-        {/* Headline + intro below collage */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-10 mt-12 grid grid-cols-1 gap-8 border-t border-ink/15 pt-8 sm:mt-16 lg:grid-cols-12"
+        {/* Giant outline wordmark behind everything */}
+        <h1
+          ref={wordmark}
+          aria-hidden="true"
+          className="text-outline-light pointer-events-none absolute inset-x-0 top-[16%] select-none text-center font-serif text-[24vw] font-semibold leading-none tracking-display sm:text-[20vw]"
         >
-          <div className="lg:col-span-7">
-            <p className="font-sans text-[0.6rem] uppercase tracking-luxe text-ink/50">
+          MIZUHARA
+        </h1>
+
+        {/* Foreground floating close-up (left) */}
+        <div
+          ref={fgCloseup}
+          className="gpu absolute left-[4%] top-[22%] hidden aspect-[3/4] w-[20%] overflow-hidden shadow-collage sm:block lg:w-[16%]"
+        >
+          <Image
+            src={MODEL.heroCloseup}
+            alt="close-up"
+            fill
+            sizes="18vw"
+            className="object-cover object-center"
+          />
+          <span className="absolute left-2 top-2 font-sans text-[0.5rem] uppercase tracking-wide-2 text-white/85">
+            #001
+          </span>
+        </div>
+
+        {/* Foreground floating alt (right) */}
+        <div
+          ref={fgAlt}
+          className="gpu absolute right-[5%] top-[30%] hidden aspect-[3/4] w-[16%] overflow-hidden border-2 border-white/10 shadow-collage lg:block"
+        >
+          <Image
+            src={MODEL.heroAlt}
+            alt="editorial"
+            fill
+            sizes="16vw"
+            className="object-cover object-center"
+          />
+          <span className="absolute left-2 top-2 font-sans text-[0.5rem] uppercase tracking-wide-2 text-white/85">
+            #002
+          </span>
+        </div>
+      </div>
+
+      {/* Content layer (no tilt, sits above) */}
+      <div className="relative z-10 mx-auto flex h-full max-w-[1600px] flex-col justify-between px-5 pb-10 pt-24 sm:px-8 sm:pb-14">
+        {/* top meta strip */}
+        <div className="flex items-center justify-between border-b border-white/15 pb-3 font-sans text-[0.55rem] uppercase tracking-wide-2 text-white/55">
+          <span>{MODEL.issue} · {MODEL.season}</span>
+          <span className="hidden sm:block">The Portfolio Edition</span>
+          <span>{MODEL.location}</span>
+        </div>
+
+        {/* center/bottom — title block */}
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-3xl">
+            <SplitText
+              as="p"
+              mode="words"
+              trigger="load"
+              delay={0.2}
+              stagger={0.06}
+              className="mb-4 font-sans text-[0.6rem] uppercase tracking-luxe text-white/60 sm:text-[0.65rem]"
+            >
               {MODEL.tagline}
-            </p>
-            <h2 className="mt-3 font-serif text-3xl font-medium leading-[1.05] tracking-tight text-ink sm:text-5xl md:text-6xl text-balance">
-              A face that frames
-              <br />
-              <span className="italic text-champagne">a story.</span>
+            </SplitText>
+
+            <h2 className="font-serif text-[14vw] font-semibold leading-[0.92] tracking-display text-white sm:text-[10vw] lg:text-[8.5rem]">
+              <SplitText
+                as="span"
+                mode="chars"
+                trigger="load"
+                delay={0.4}
+                stagger={0.035}
+                duration={1.2}
+                className="block"
+              >
+                {"A face that"}
+              </SplitText>
+              <SplitText
+                as="span"
+                mode="chars"
+                trigger="load"
+                delay={0.9}
+                stagger={0.035}
+                duration={1.2}
+                className="block italic text-champagne"
+              >
+                {"frames a story"}
+              </SplitText>
             </h2>
           </div>
-          <div className="flex flex-col justify-end gap-6 lg:col-span-5">
-            <p className="max-w-md text-base leading-relaxed text-ink/70">
+
+          {/* intro + CTAs */}
+          <div className="max-w-sm lg:pb-4">
+            <SplitText
+              as="p"
+              mode="lines"
+              trigger="load"
+              delay={1.4}
+              stagger={0.08}
+              className="mb-7 text-base leading-relaxed text-white/75"
+            >
               {MODEL.heroIntro}
-            </p>
+            </SplitText>
+
             <div className="flex flex-wrap items-center gap-4">
-              <a
-                href="#portfolio"
-                className="group inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 font-sans text-[0.65rem] uppercase tracking-wide-2 text-paper transition-colors hover:bg-ink/85"
-              >
-                View Portfolio
-                <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
-              <a
-                href="#contact"
-                className="font-sans text-[0.65rem] uppercase tracking-wide-2 text-ink/70 underline-offset-4 hover:text-ink hover:underline"
-              >
-                Book Mizuhara
-              </a>
+              <Magnetic strength={0.4}>
+                <a
+                  href="#portfolio"
+                  className="btn-glow group inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 font-sans text-[0.6rem] uppercase tracking-wide-2 text-ink"
+                >
+                  View Portfolio
+                  <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </a>
+              </Magnetic>
+              <Magnetic strength={0.25}>
+                <a
+                  href="#contact"
+                  className="link-underline font-sans text-[0.6rem] uppercase tracking-wide-2 text-white/70 hover:text-white"
+                >
+                  Book Mizuhara
+                </a>
+              </Magnetic>
             </div>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Scroll cue */}
-        <motion.a
-          href="#about"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1.1 }}
-          className="mt-12 flex items-center justify-center gap-2 font-sans text-[0.55rem] uppercase tracking-luxe text-ink/50"
-          aria-label="Scroll to explore"
-        >
-          <span>Scroll</span>
-          <motion.span
-            animate={{ y: [0, 5, 0] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <ArrowDown className="h-3.5 w-3.5" />
-          </motion.span>
-        </motion.a>
+        {/* scroll cue */}
+        <div className="mt-8 flex items-center justify-between border-t border-white/15 pt-4">
+          <span className="font-sans text-[0.55rem] uppercase tracking-wide-2 text-white/45">
+            Scroll to explore
+          </span>
+          <div className="flex items-center gap-3 font-sans text-[0.55rem] uppercase tracking-wide-2 text-white/45">
+            <span>Shot. {MODEL.shotBy}</span>
+            <span className="h-3 w-px bg-white/25" />
+            <span>{MODEL.shotAt}</span>
+          </div>
+          <ArrowDown className="h-4 w-4 animate-pulse text-white/45" />
+        </div>
       </div>
     </section>
   );
