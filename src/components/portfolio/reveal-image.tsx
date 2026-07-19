@@ -195,7 +195,7 @@ export function RevealImage({
       ref={wrapRef}
       className={cn("relative overflow-hidden gpu", className)}
     >
-      <div ref={innerRef} className="gpu h-full w-full">
+      <div ref={innerRef} className="gpu absolute inset-0">
         <Image
           src={src}
           alt={alt}

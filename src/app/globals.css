@@ -294,4 +294,5 @@
 @media (prefers-reduced-motion: reduce) {
   .marquee { animation: none; }
   html { scroll-behavior: auto; }
+  .global-grain { display: none; }
 }

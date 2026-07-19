@@ -6,6 +6,7 @@ import { SmoothScrollProvider } from "@/components/portfolio/smooth-scroll-provi
 import { CursorFollower } from "@/components/portfolio/cursor-follower";
 import { Preloader } from "@/components/portfolio/preloader";
 import { ScrollProgress } from "@/components/portfolio/scroll-progress";
+import { GlobalGrain } from "@/components/portfolio/global-grain";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -65,6 +66,7 @@ export default function RootLayout({
           <Preloader />
           <CursorFollower />
           <ScrollProgress />
+          <GlobalGrain />
           {children}
           <Toaster />
         </SmoothScrollProvider>

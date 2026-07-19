@@ -143,6 +143,7 @@ export function Hero() {
             alt={`${MODEL.name} — ${MODEL.tagline}`}
             fill
             priority
+            loading="eager"
             sizes="100vw"
             className="object-cover object-center"
           />

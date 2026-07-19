@@ -122,7 +122,7 @@ export function HorizontalGallery() {
               key={item.src}
               className={`group relative shrink-0 overflow-hidden ${aspectClass[item.aspect]}`}
             >
-              <div className="h-full w-full overflow-hidden">
+              <div className="relative h-full w-full overflow-hidden">
                 <Image
                   src={item.src}
                   alt={item.title}
