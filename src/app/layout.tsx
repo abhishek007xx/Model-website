@@ -4,6 +4,8 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { SmoothScrollProvider } from "@/components/portfolio/smooth-scroll-provider";
 import { CursorFollower } from "@/components/portfolio/cursor-follower";
+import { Preloader } from "@/components/portfolio/preloader";
+import { ScrollProgress } from "@/components/portfolio/scroll-progress";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -60,7 +62,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${playfair.variable} antialiased bg-background text-foreground`}
       >
         <SmoothScrollProvider>
+          <Preloader />
           <CursorFollower />
+          <ScrollProgress />
           {children}
           <Toaster />
         </SmoothScrollProvider>
