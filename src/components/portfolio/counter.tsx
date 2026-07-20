@@ -51,7 +51,7 @@ export function Counter({
     const obj = { v: from };
     const st = ScrollTrigger.create({
       trigger: el,
-      start: "top 85%",
+      start: "top 75%",
       once: true,
       onEnter: () => {
         gsap.to(obj, {

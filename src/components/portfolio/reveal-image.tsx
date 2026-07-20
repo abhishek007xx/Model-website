@@ -104,7 +104,7 @@ export function RevealImage({
             scale: 1,
             duration: 1.4,
             ease: "power4.inOut",
-            scrollTrigger: { trigger: wrap, start: "top 85%", once: true },
+            scrollTrigger: { trigger: wrap, start: "top 70%", once: true },
           });
           // settle the scale with a tiny overshoot
           if (settle) {
@@ -116,7 +116,7 @@ export function RevealImage({
                 duration: 1.2,
                 ease: "elastic.out(1, 0.7)",
                 delay: 1.3,
-                scrollTrigger: { trigger: wrap, start: "top 85%", once: true },
+                scrollTrigger: { trigger: wrap, start: "top 70%", once: true },
               }
             );
           }
@@ -129,7 +129,7 @@ export function RevealImage({
             scale: 1,
             duration: 1.4,
             ease: "power4.inOut",
-            scrollTrigger: { trigger: wrap, start: "top 85%", once: true },
+            scrollTrigger: { trigger: wrap, start: "top 70%", once: true },
           });
           break;
 
@@ -140,7 +140,7 @@ export function RevealImage({
             scale: 1,
             duration: 1.4,
             ease: "power4.inOut",
-            scrollTrigger: { trigger: wrap, start: "top 85%", once: true },
+            scrollTrigger: { trigger: wrap, start: "top 70%", once: true },
           });
           break;
 
@@ -151,7 +151,7 @@ export function RevealImage({
             scale: 1,
             duration: 1.4,
             ease: "power4.inOut",
-            scrollTrigger: { trigger: wrap, start: "top 85%", once: true },
+            scrollTrigger: { trigger: wrap, start: "top 70%", once: true },
           });
           break;
 
@@ -162,7 +162,7 @@ export function RevealImage({
             scale: 1,
             duration: 1.6,
             ease: "power4.inOut",
-            scrollTrigger: { trigger: wrap, start: "top 85%", once: true },
+            scrollTrigger: { trigger: wrap, start: "top 70%", once: true },
           });
           break;
 
@@ -176,7 +176,7 @@ export function RevealImage({
             scale: 1,
             duration: 1.5,
             ease: "power4.inOut",
-            scrollTrigger: { trigger: wrap, start: "top 85%", once: true },
+            scrollTrigger: { trigger: wrap, start: "top 70%", once: true },
           });
           break;
 
@@ -193,7 +193,7 @@ export function RevealImage({
             opacity: 1,
             duration: 1.8,
             ease: "power3.out",
-            scrollTrigger: { trigger: wrap, start: "top 85%", once: true },
+            scrollTrigger: { trigger: wrap, start: "top 70%", once: true },
           });
           break;
 
@@ -210,7 +210,7 @@ export function RevealImage({
             scale: 1,
             duration: 1.8,
             ease: "power3.out",
-            scrollTrigger: { trigger: wrap, start: "top 85%", once: true },
+            scrollTrigger: { trigger: wrap, start: "top 70%", once: true },
           });
           break;
 
@@ -222,7 +222,7 @@ export function RevealImage({
             scale: 1,
             duration: 1.8,
             ease: "power3.out",
-            scrollTrigger: { trigger: wrap, start: "top 85%", once: true },
+            scrollTrigger: { trigger: wrap, start: "top 70%", once: true },
           });
           break;
 
@@ -292,7 +292,7 @@ export function RevealImage({
               y: 0,
               duration: 1.3,
               ease: "power3.out",
-              scrollTrigger: { trigger: wrap, start: "top 85%", once: true },
+              scrollTrigger: { trigger: wrap, start: "top 70%", once: true },
             }
           );
           break;

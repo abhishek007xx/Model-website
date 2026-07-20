@@ -103,7 +103,7 @@ export function SplitText({
     } else {
       st = ScrollTrigger.create({
         trigger: el,
-        start: "top 85%",
+        start: "top 75%",
         once: true,
         onEnter: play,
       });

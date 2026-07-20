@@ -45,7 +45,7 @@ export function SectionReveal({
     if (reduce) return;
 
     const ctx = gsap.context(() => {
-      const start = "top 80%";
+      const start = "top 70%";
       switch (variant) {
         case "iris":
           gsap.fromTo(
