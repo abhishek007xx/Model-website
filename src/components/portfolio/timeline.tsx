@@ -72,8 +72,14 @@ export function Timeline() {
       const panels = el.querySelectorAll<HTMLElement>("[data-panel]");
       const progressLine = el.querySelector<HTMLElement>("[data-progress-line]");
 
-      // Pin the sticky stage and cross-fade panels
+      // Pin the sticky stage and cross-fade panels.
+      // Each panel HOLDS fully visible for most of its segment, with a
+      // quick cross-fade only in the final 18% of the segment — so images
+      // never move while they're still mid-screen. They only transition
+      // once you've scrolled clearly into the next chapter.
       const total = panels.length;
+      const HOLD = 0.82; // 82% hold, 18% cross-fade window
+
       ScrollTrigger.create({
         trigger: el,
         start: "top top",
@@ -89,19 +95,57 @@ export function Timeline() {
           panels.forEach((panel, i) => {
             const segStart = i / total;
             const segEnd = (i + 1) / total;
-            const segP = gsap.utils.clamp(0, 1, (p - segStart) / (segEnd - segStart));
-            // active panel is the one whose segment we're in
-            const isActive = p >= segStart && p < segEnd;
-            if (isActive) {
+            const segSize = segEnd - segStart;
+            // local progress within this panel's segment (0..1)
+            const local = gsap.utils.clamp(0, 1, (p - segStart) / segSize);
+
+            // The PREVIOUS panel's fade-out window overlaps with this
+            // panel's fade-in, so we fade IN during the first (1-HOLD)
+            // of our segment if there's a previous panel.
+            const fadeInWindow = 1 - HOLD;
+
+            if (i === 0 && p < segStart) {
               gsap.set(panel, { opacity: 1, zIndex: i + 1 });
-            } else if (p < segStart) {
-              gsap.set(panel, { opacity: 0, zIndex: 1 });
-            } else {
-              // fade out after its segment
-              const fadeOut = gsap.utils.clamp(0, 1, (p - segEnd) / (segEnd - segStart) * 2);
-              gsap.set(panel, { opacity: 1 - fadeOut, zIndex: i + 1 });
+              return;
             }
-            void segP;
+
+            if (p < segStart) {
+              // hasn't entered yet — but check if we're in the previous
+              // panel's fade-out window (this panel should be fading in)
+              const prevSegEnd = segStart; // end of previous panel's segment
+              const prevFadeStart = prevSegEnd - segSize * fadeInWindow;
+              if (i > 0 && p >= prevFadeStart && p < segStart) {
+                const fp = (p - prevFadeStart) / (segStart - prevFadeStart);
+                gsap.set(panel, { opacity: fp, zIndex: i + 1 });
+              } else {
+                gsap.set(panel, { opacity: 0, zIndex: 1 });
+              }
+              return;
+            }
+
+            if (p >= segEnd && i === total - 1) {
+              gsap.set(panel, { opacity: 1, zIndex: i + 1 });
+              return;
+            }
+
+            if (p >= segEnd) {
+              gsap.set(panel, { opacity: 0, zIndex: 1 });
+              return;
+            }
+
+            // Within this panel's segment:
+            // - 0% → fadeInWindow : fading IN (if not first panel)
+            // - fadeInWindow → HOLD : fully visible (hold)
+            // - HOLD → 100% : cross-fade OUT
+            if (i > 0 && local < fadeInWindow) {
+              // still fading in from previous panel's cross-fade
+              gsap.set(panel, { opacity: local / fadeInWindow, zIndex: i + 1 });
+            } else if (local <= HOLD) {
+              gsap.set(panel, { opacity: 1, zIndex: i + 1 });
+            } else {
+              const fadeP = (local - HOLD) / (1 - HOLD);
+              gsap.set(panel, { opacity: 1 - fadeP, zIndex: i + 1 });
+            }
           });
         },
       });
