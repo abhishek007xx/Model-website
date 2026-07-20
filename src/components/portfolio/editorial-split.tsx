@@ -20,13 +20,15 @@ export function EditorialSplit() {
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">
           {/* Large image */}
           <div className="lg:col-span-8">
-            <RevealImage
-              src="/portfolio/gallery-14.jpg"
-              alt="Editorial — Corridor"
-              variant="mask-left"
-              className="aspect-[16/10] w-full shadow-collage"
-              sizes="(max-width: 1024px) 100vw, 66vw"
-            />
+            <div className="relative grade-champagne">
+              <RevealImage
+                src="/portfolio/gallery-14.jpg"
+                alt="Editorial — Corridor"
+                variant="mask-left"
+                className="aspect-[16/10] w-full shadow-collage"
+                sizes="(max-width: 1024px) 100vw, 66vw"
+              />
+            </div>
           </div>
 
           {/* Pull quote */}

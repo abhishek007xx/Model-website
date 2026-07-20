@@ -7,6 +7,7 @@ import { Plus, X, ArrowUpRight } from "lucide-react";
 import { GALLERY, MODEL, type GalleryItem } from "./data";
 import { RevealImage, type RevealVariant } from "./reveal-image";
 import { SplitText } from "./split-text";
+import { ScrambleText, KerningText } from "./text-effects";
 import { cn } from "@/lib/utils";
 
 const CATEGORIES = ["All", "Editorial", "Beauty", "Runway", "Campaign"];
@@ -65,6 +66,28 @@ const aspectClass: Record<GalleryItem["aspect"], string> = {
   std: "aspect-[4/5]",
 };
 
+// Cinematic color grades cycling through gallery images for variety.
+const GRADES = [
+  "grade-teal-orange",
+  "grade-warm",
+  "grade-noir",
+  "grade-champagne",
+  "grade-faded",
+  "grade-warm",
+  "grade-teal-orange",
+  "grade-champagne",
+  "grade-noir",
+  "grade-faded",
+  "grade-warm",
+  "grade-teal-orange",
+  "grade-champagne",
+  "grade-noir",
+  "grade-faded",
+  "grade-warm",
+  "grade-teal-orange",
+  "grade-champagne",
+];
+
 export function Gallery() {
   const [filter, setFilter] = useState("All");
   const [active, setActive] = useState<number | null>(null);
@@ -81,16 +104,16 @@ export function Gallery() {
         {/* Header */}
         <div className="flex flex-col gap-6 border-b border-ink/15 pb-8 md:flex-row md:items-end md:justify-between">
           <div>
-            <SplitText
+            <ScrambleText
               as="span"
-              mode="words"
+              duration={1}
               className="mb-4 block font-sans text-[0.6rem] uppercase tracking-luxe text-ink/50"
             >
               The Archive — 03b
-            </SplitText>
-            <h2 className="font-serif text-5xl font-medium tracking-tight text-ink sm:text-6xl md:text-7xl text-balance">
+            </ScrambleText>
+            <KerningText as="h2" from="0.15em" to="-0.02em" duration={1.4} className="font-serif text-5xl font-medium text-ink sm:text-6xl md:text-7xl text-balance">
               Selected Work
-            </h2>
+            </KerningText>
           </div>
           <div className="flex items-center gap-3 font-sans text-[0.55rem] uppercase tracking-wide-2 text-ink/55">
             <span>{String(GALLERY.length).padStart(2, "0")} Stories</span>
@@ -144,7 +167,8 @@ export function Gallery() {
                     style={{ "--rot": `${rotation}deg` } as React.CSSProperties}
                     className={cn(
                       "chromatic-hover relative overflow-hidden shadow-collage transition-transform duration-700 ease-out rotate-[var(--rot)] group-hover:rotate-0 group-hover:scale-[1.03] group-hover:z-20",
-                      aspectClass[item.aspect]
+                      aspectClass[item.aspect],
+                      GRADES[realIndex % GRADES.length]
                     )}
                   >
                     <RevealImage

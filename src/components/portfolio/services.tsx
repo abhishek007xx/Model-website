@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { SERVICES, MODEL } from "./data";
 import { SplitText } from "./split-text";
+import { ScrambleText, KerningText } from "./text-effects";
 import { Magnetic } from "./magnetic";
 import { RevealImage } from "./reveal-image";
 
@@ -28,16 +29,16 @@ export function Services() {
         {/* Header */}
         <div className="flex flex-col gap-6 border-b border-paper/15 pb-8 md:flex-row md:items-end md:justify-between">
           <div>
-            <SplitText as="span" mode="words" className="mb-4 block font-sans text-[0.6rem] uppercase tracking-luxe text-paper/50">
+            <ScrambleText as="span" duration={1} className="mb-4 block font-sans text-[0.6rem] uppercase tracking-luxe text-paper/50">
               Services — 05
-            </SplitText>
+            </ScrambleText>
             <h2 className="font-serif text-5xl font-medium tracking-tight sm:text-6xl md:text-7xl text-balance">
-              <SplitText as="span" mode="chars" stagger={0.035} duration={1.1} className="block">
+              <KerningText as="span" from="0.15em" to="-0.02em" duration={1.4} className="block">
                 How we can
-              </SplitText>
-              <SplitText as="span" mode="chars" stagger={0.035} duration={1.1} delay={0.3} className="block italic text-champagne">
+              </KerningText>
+              <KerningText as="span" from="0.15em" to="-0.02em" duration={1.4} delay={0.3} className="block italic text-champagne">
                 work together
-              </SplitText>
+              </KerningText>
             </h2>
           </div>
           <SplitText as="p" mode="lines" delay={0.2} stagger={0.08} className="max-w-sm text-sm text-paper/60 md:text-right">

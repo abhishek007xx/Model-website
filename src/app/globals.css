@@ -337,6 +337,86 @@
     from { background-position: 200% 0; }
     to { background-position: -200% 0; }
   }
+
+  /* ===== Cinematic Color Grading Overlays (film LUT-like) ===== */
+
+  /* Teal & Orange — classic cinema grade (warm highlights, cool shadows) */
+  .grade-teal-orange::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 140, 50, 0.12) 0%,
+      transparent 40%,
+      rgba(40, 120, 150, 0.15) 100%
+    );
+    mix-blend-mode: soft-light;
+    z-index: 2;
+  }
+
+  /* Noir — high-contrast B&W with subtle blue */
+  .grade-noir::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      rgba(20, 30, 45, 0.2) 0%,
+      rgba(200, 200, 210, 0.05) 100%
+    );
+    mix-blend-mode: overlay;
+    z-index: 2;
+  }
+
+  /* Warm film — golden vintage stock */
+  .grade-warm::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 200, 120, 0.1) 0%,
+      rgba(200, 130, 60, 0.12) 100%
+    );
+    mix-blend-mode: soft-light;
+    z-index: 2;
+  }
+
+  /* Champagne — luxury warm gold wash */
+  .grade-champagne::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at 50% 40%,
+      rgba(200, 160, 90, 0.12) 0%,
+      transparent 70%
+    );
+    mix-blend-mode: overlay;
+    z-index: 2;
+  }
+
+  /* Faded film — desaturated vintage with lifted blacks */
+  .grade-faded::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: rgba(180, 170, 160, 0.12);
+    mix-blend-mode: lighten;
+    z-index: 2;
+  }
+
+  /* Letter reveal mask — wraps each line so children slide up behind an edge */
+  .line-mask {
+    overflow: hidden;
+    display: block;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

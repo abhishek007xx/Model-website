@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { CREDITS, MODEL } from "./data";
 import { SplitText } from "./split-text";
+import { ScrambleText } from "./text-effects";
 import { Marquee } from "./marquee";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -86,13 +87,13 @@ export function Experience() {
       {/* Pinned horizontal houses scroll — fills viewport */}
       <div className="relative flex h-screen flex-col justify-center overflow-hidden">
         <div className="mb-10 flex items-center justify-between px-5 sm:px-8">
-          <SplitText
+          <ScrambleText
             as="span"
-            mode="words"
+            duration={1.2}
             className="font-sans text-[0.6rem] uppercase tracking-luxe text-paper/50"
           >
             Experience — 04 · Fashion Houses
-          </SplitText>
+          </ScrambleText>
           <span className="font-sans text-[0.55rem] uppercase tracking-wide-2 text-paper/40">
             {String(CREDITS.houses.length).padStart(2, "0")} credits
           </span>

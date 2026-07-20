@@ -32,7 +32,7 @@ export function GalleryIntro() {
         </div>
 
         {/* Featured cinematic image */}
-        <div className="relative">
+        <div className="relative grade-warm">
           <RevealImage
             src={featured.src}
             alt={featured.title}

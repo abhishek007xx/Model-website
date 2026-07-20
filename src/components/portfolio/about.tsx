@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ABOUT, MODEL } from "./data";
 import { RevealImage } from "./reveal-image";
 import { SplitText } from "./split-text";
+import { ScrambleText, KerningText } from "./text-effects";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -87,13 +88,13 @@ export function About() {
       <div className="mx-auto max-w-[1600px] px-5 sm:px-8">
         {/* Section label */}
         <div className="mb-12 flex items-center justify-between border-b border-ink/15 pb-4">
-          <SplitText
+          <ScrambleText
             as="span"
-            mode="words"
+            duration={1}
             className="font-sans text-[0.6rem] uppercase tracking-luxe text-ink/50"
           >
             About — 01
-          </SplitText>
+          </ScrambleText>
           <span className="font-sans text-[0.55rem] uppercase tracking-wide-2 text-ink/40">
             {MODEL.issue} · {MODEL.season}
           </span>
@@ -162,19 +163,19 @@ export function About() {
             </SplitText>
 
             <h2 className="font-serif text-5xl font-medium leading-[1.02] tracking-tight text-ink sm:text-6xl md:text-7xl text-balance">
-              <SplitText as="span" mode="chars" stagger={0.035} duration={1.1} className="block">
+              <KerningText as="span" from="0.2em" to="-0.02em" duration={1.4} className="block">
                 A modern muse
-              </SplitText>
-              <SplitText
+              </KerningText>
+              <KerningText
                 as="span"
-                mode="chars"
-                stagger={0.035}
-                duration={1.1}
+                from="0.2em"
+                to="-0.02em"
+                duration={1.4}
                 delay={0.3}
                 className="block italic text-champagne"
               >
                 for an editorial age
-              </SplitText>
+              </KerningText>
             </h2>
 
             <div className="mt-8 space-y-6">

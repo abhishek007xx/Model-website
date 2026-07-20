@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { MODEL } from "./data";
 import { SplitText } from "./split-text";
+import { ScrambleText } from "./text-effects";
 import { Magnetic } from "./magnetic";
 import { GlassHover } from "./micro-interactions";
 
@@ -63,9 +64,9 @@ export function Contact() {
       <div className="relative z-10 mx-auto max-w-[1600px] px-5 sm:px-8">
         {/* Section label */}
         <div className="mb-12 flex items-center justify-between border-b border-paper/15 pb-4">
-          <SplitText as="span" mode="words" className="font-sans text-[0.6rem] uppercase tracking-luxe text-paper/50">
+          <ScrambleText as="span" duration={1} className="font-sans text-[0.6rem] uppercase tracking-luxe text-paper/50">
             Contact — 06
-          </SplitText>
+          </ScrambleText>
           <span className="font-sans text-[0.55rem] uppercase tracking-wide-2 text-paper/40">
             {MODEL.issue} · {MODEL.season}
           </span>
@@ -115,7 +116,7 @@ export function Contact() {
             </div>
 
             {/* Featured editorial image */}
-            <div className="mt-10 relative aspect-[16/10] w-full overflow-hidden border border-paper/15">
+            <div className="mt-10 relative aspect-[16/10] w-full overflow-hidden border border-paper/15 grade-teal-orange">
               <Image
                 src="/portfolio/gallery-15.jpg"
                 alt={`${MODEL.name} editorial`}

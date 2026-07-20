@@ -153,7 +153,7 @@ export function Hero() {
         className="gpu absolute inset-0"
         style={{ transformStyle: "preserve-3d" }}
       >
-        <div ref={bgImg} className="gpu absolute inset-0">
+        <div ref={bgImg} className="gpu absolute inset-0 grade-teal-orange">
           <Image
             src={MODEL.heroMain}
             alt={`${MODEL.name} — ${MODEL.tagline}`}

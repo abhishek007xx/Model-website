@@ -143,7 +143,7 @@ export function Stats() {
               <div
                 key={src}
                 data-stack-card={i}
-                className="gpu absolute inset-0 overflow-hidden shadow-collage"
+                className="gpu absolute inset-0 overflow-hidden shadow-collage grade-noir"
               >
                 <Image
                   src={src}
