@@ -50,38 +50,42 @@ const MILESTONES = [
 ];
 
 /**
- * Timeline
- * --------
- * A scroll-driven cinematic timeline. A sticky center column holds the
- * current milestone's image + text, which cross-fades as you scroll
- * through each segment. A vertical progress line on the left fills
- * champagne as the timeline advances. Each milestone's year scrambles in.
+ * Timeline (redesigned)
+ * ---------------------
+ * A scroll-driven cinematic timeline.
+ *
+ * KEY FIX: The pin is attached to the STAGE element (not the whole
+ * section), so the panels only start transitioning once the stage is
+ * perfectly pinned at the top of the viewport — after the header has
+ * fully scrolled away. Images never move while they're half on-screen.
+ *
+ * Each panel holds fully visible for the middle 70% of its segment,
+ * with a quick cross-fade only at the boundaries.
  */
 export function Timeline() {
-  const root = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const el = root.current;
-    if (!el) return;
+    const stage = stageRef.current;
+    if (!stage) return;
     const reduce =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) return;
 
     const ctx = gsap.context(() => {
-      const panels = el.querySelectorAll<HTMLElement>("[data-panel]");
-      const progressLine = el.querySelector<HTMLElement>("[data-progress-line]");
+      const panels = stage.querySelectorAll<HTMLElement>("[data-panel]");
+      const progressLine = stage.querySelector<HTMLElement>("[data-progress-line]");
 
-      // Pin the sticky stage and cross-fade panels.
-      // Each panel HOLDS fully visible for most of its segment, with a
-      // quick cross-fade only in the final 18% of the segment — so images
-      // never move while they're still mid-screen. They only transition
-      // once you've scrolled clearly into the next chapter.
       const total = panels.length;
-      const HOLD = 0.82; // 82% hold, 18% cross-fade window
+      // Each segment: 10% fade-in → 80% hold → 10% fade-out
+      const FADE = 0.10;
 
+      // Pin ONLY the stage — trigger is the stage itself, so pinning
+      // starts when the stage's top hits the viewport top (after the
+      // header has scrolled away). End distance = total panels × 90vh.
       ScrollTrigger.create({
-        trigger: el,
+        trigger: stage,
         start: "top top",
         end: () => `+=${total * 90}%`,
         pin: true,
@@ -96,25 +100,13 @@ export function Timeline() {
             const segStart = i / total;
             const segEnd = (i + 1) / total;
             const segSize = segEnd - segStart;
-            // local progress within this panel's segment (0..1)
             const local = gsap.utils.clamp(0, 1, (p - segStart) / segSize);
 
-            // The PREVIOUS panel's fade-out window overlaps with this
-            // panel's fade-in, so we fade IN during the first (1-HOLD)
-            // of our segment if there's a previous panel.
-            const fadeInWindow = 1 - HOLD;
-
-            if (i === 0 && p < segStart) {
-              gsap.set(panel, { opacity: 1, zIndex: i + 1 });
-              return;
-            }
-
+            // Before this panel's segment
             if (p < segStart) {
-              // hasn't entered yet — but check if we're in the previous
-              // panel's fade-out window (this panel should be fading in)
-              const prevSegEnd = segStart; // end of previous panel's segment
-              const prevFadeStart = prevSegEnd - segSize * fadeInWindow;
-              if (i > 0 && p >= prevFadeStart && p < segStart) {
+              // Check if we're in the previous panel's fade-out window
+              const prevFadeStart = segStart - segSize * FADE;
+              if (i > 0 && p >= prevFadeStart) {
                 const fp = (p - prevFadeStart) / (segStart - prevFadeStart);
                 gsap.set(panel, { opacity: fp, zIndex: i + 1 });
               } else {
@@ -123,40 +115,43 @@ export function Timeline() {
               return;
             }
 
-            if (p >= segEnd && i === total - 1) {
-              gsap.set(panel, { opacity: 1, zIndex: i + 1 });
-              return;
-            }
-
+            // After this panel's segment
             if (p >= segEnd) {
-              gsap.set(panel, { opacity: 0, zIndex: 1 });
+              if (i === total - 1) {
+                // last panel stays visible after its segment
+                gsap.set(panel, { opacity: 1, zIndex: i + 1 });
+              } else {
+                gsap.set(panel, { opacity: 0, zIndex: 1 });
+              }
               return;
             }
 
             // Within this panel's segment:
-            // - 0% → fadeInWindow : fading IN (if not first panel)
-            // - fadeInWindow → HOLD : fully visible (hold)
-            // - HOLD → 100% : cross-fade OUT
-            if (i > 0 && local < fadeInWindow) {
-              // still fading in from previous panel's cross-fade
-              gsap.set(panel, { opacity: local / fadeInWindow, zIndex: i + 1 });
-            } else if (local <= HOLD) {
+            // 0% → 10% : fade in (except first panel, which starts visible)
+            // 10% → 90% : HOLD fully visible
+            // 90% → 100% : fade out
+            if (i === 0 && local < FADE) {
               gsap.set(panel, { opacity: 1, zIndex: i + 1 });
+            } else if (local < FADE) {
+              gsap.set(panel, { opacity: local / FADE, zIndex: i + 1 });
+            } else if (local > 1 - FADE) {
+              const fp = (local - (1 - FADE)) / FADE;
+              gsap.set(panel, { opacity: 1 - fp, zIndex: i + 1 });
             } else {
-              const fadeP = (local - HOLD) / (1 - HOLD);
-              gsap.set(panel, { opacity: 1 - fadeP, zIndex: i + 1 });
+              // HOLD — fully visible, completely still
+              gsap.set(panel, { opacity: 1, zIndex: i + 1 });
             }
           });
         },
       });
-    }, el);
+    }, stage);
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <section ref={root} className="relative bg-ink">
-      {/* Section header (not pinned) */}
+    <section className="relative bg-ink">
+      {/* Section header (scrolls naturally, NOT pinned) */}
       <div className="grain mesh-bg relative overflow-hidden px-5 py-20 sm:px-8 sm:py-28">
         <div className="mx-auto max-w-[1600px]">
           <div className="mb-8 flex items-center justify-between border-b border-paper/15 pb-4">
@@ -182,8 +177,11 @@ export function Timeline() {
         </div>
       </div>
 
-      {/* Pinned sticky stage */}
-      <div className="relative h-[100svh] min-h-[600px] overflow-hidden">
+      {/* Pinned stage — pin triggers ONLY on this element */}
+      <div
+        ref={stageRef}
+        className="relative h-[100svh] min-h-[600px] overflow-hidden bg-ink"
+      >
         {/* Progress rail */}
         <div className="absolute left-5 top-1/2 z-30 hidden h-48 w-px -translate-y-1/2 bg-paper/15 sm:left-8 lg:block">
           <div
