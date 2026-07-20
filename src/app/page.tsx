@@ -3,6 +3,7 @@ import { Hero } from "@/components/portfolio/hero";
 import { Marquee } from "@/components/portfolio/marquee";
 import { About } from "@/components/portfolio/about";
 import { Stats } from "@/components/portfolio/stats";
+import { Timeline } from "@/components/portfolio/timeline";
 import { GalleryIntro } from "@/components/portfolio/gallery-intro";
 import { HorizontalGallery } from "@/components/portfolio/horizontal-gallery";
 import { Gallery } from "@/components/portfolio/gallery";
@@ -30,8 +31,11 @@ export default function Home() {
         {/* Wedge transition paper → ink */}
         <SectionDivider variant="wedge-down" from="bg-paper" to="bg-ink" />
 
-        {/* Stats (ink, pinned image stacking) */}
+        {/* Stats (ink, pinned image stacking with depth blur) */}
         <Stats />
+
+        {/* Timeline (ink, pinned scroll-driven career milestones) */}
+        <Timeline />
 
         {/* Gallery: intro → filmstrip → collage (ink → ink → paper) */}
         <GalleryIntro />

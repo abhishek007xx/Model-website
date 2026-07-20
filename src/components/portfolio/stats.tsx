@@ -62,12 +62,12 @@ export function Stats() {
           // segment progress: card i fully covers at progress = (i+1)/total
           cards.forEach((card, i) => {
             if (i === 0) {
-              // first card always visible, slight recede as it gets covered
+              // first card always visible, recedes (scale + brightness + blur) as covered
               const cover = gsap.utils.clamp(0, 1, p / (1 / total));
               gsap.set(card, {
                 opacity: 1,
-                scale: 1 - cover * 0.04,
-                filter: `brightness(${1 - cover * 0.25})`,
+                scale: 1 - cover * 0.06,
+                filter: `brightness(${1 - cover * 0.3}) blur(${cover * 3}px)`,
               });
             } else {
               // each subsequent card slides up + fades in during its segment
@@ -82,16 +82,16 @@ export function Stats() {
                 yPercent: (1 - sp) * 60,
                 opacity: sp,
                 scale: 1 - (1 - sp) * 0.04,
-                filter: `brightness(${1 - (1 - sp) * 0.1})`,
+                filter: `brightness(${1 - (1 - sp) * 0.1}) blur(${(1 - sp) * 2}px)`,
               });
-              // recede when next card starts covering it
+              // recede (scale + brightness + blur) when next card covers it
               if (i < total - 1) {
                 const nextStart = i / total;
                 const nextEnd = (i + 1) / total;
                 const np = gsap.utils.clamp(0, 1, (p - nextStart) / (nextEnd - nextStart));
                 gsap.set(card, {
-                  scale: 1 - np * 0.04,
-                  filter: `brightness(${1 - np * 0.25})`,
+                  scale: 1 - np * 0.06,
+                  filter: `brightness(${1 - np * 0.3}) blur(${np * 3}px)`,
                 });
               }
             }

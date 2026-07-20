@@ -7,6 +7,8 @@ import { CursorFollower } from "@/components/portfolio/cursor-follower";
 import { Preloader } from "@/components/portfolio/preloader";
 import { ScrollProgress } from "@/components/portfolio/scroll-progress";
 import { GlobalGrain } from "@/components/portfolio/global-grain";
+import { NavDots } from "@/components/portfolio/nav-dots";
+import { ScrollProgressRail } from "@/components/portfolio/scroll-velocity";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -66,6 +68,8 @@ export default function RootLayout({
           <Preloader />
           <CursorFollower />
           <ScrollProgress />
+          <ScrollProgressRail />
+          <NavDots />
           <GlobalGrain />
           {children}
           <Toaster />
