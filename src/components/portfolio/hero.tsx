@@ -278,6 +278,7 @@ export function Hero() {
               <Magnetic strength={0.4}>
                 <a
                   href="#portfolio"
+                  data-cursor-text="Enter"
                   className="btn-glow group inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 font-sans text-[0.6rem] uppercase tracking-wide-2 text-ink"
                 >
                   View Portfolio

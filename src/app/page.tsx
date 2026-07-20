@@ -13,6 +13,7 @@ import { Services } from "@/components/portfolio/services";
 import { Contact } from "@/components/portfolio/contact";
 import { SiteFooter } from "@/components/portfolio/site-footer";
 import { SectionDivider } from "@/components/portfolio/section-divider";
+import { SectionReveal } from "@/components/portfolio/section-reveal";
 
 export default function Home() {
   return (
@@ -25,8 +26,10 @@ export default function Home() {
         {/* Marquee seam */}
         <Marquee variant="dark" duration={36} />
 
-        {/* About (paper, parallax collage) */}
-        <About />
+        {/* About (paper, parallax collage) — rises into view */}
+        <SectionReveal variant="rise">
+          <About />
+        </SectionReveal>
 
         {/* Wedge transition paper → ink */}
         <SectionDivider variant="wedge-down" from="bg-paper" to="bg-ink" />
@@ -41,19 +44,27 @@ export default function Home() {
         <GalleryIntro />
         <HorizontalGallery />
         <SectionDivider variant="wedge-up" from="bg-ink" to="bg-paper" />
-        <Gallery />
+        <SectionReveal variant="scale">
+          <Gallery />
+        </SectionReveal>
 
         {/* Editorial interlude (ink, image-led pull quote) */}
-        <EditorialSplit />
+        <SectionReveal variant="iris">
+          <EditorialSplit />
+        </SectionReveal>
 
         {/* Experience (ink, pinned horizontal credits) */}
         <Experience />
 
-        {/* Services (ink, image-header cards) */}
-        <Services />
+        {/* Services (ink, image-header cards) — wipes up into view */}
+        <SectionReveal variant="wipe-up">
+          <Services />
+        </SectionReveal>
 
         {/* Contact (ink) */}
-        <Contact />
+        <SectionReveal variant="rise">
+          <Contact />
+        </SectionReveal>
       </main>
       <SiteFooter />
     </div>
