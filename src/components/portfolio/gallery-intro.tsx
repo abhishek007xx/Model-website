@@ -3,6 +3,7 @@
 import { GALLERY, MODEL } from "./data";
 import { SplitText } from "./split-text";
 import { RevealImage } from "./reveal-image";
+import { MagneticImage } from "./magnetic-image";
 
 /**
  * GalleryIntro
@@ -31,13 +32,13 @@ export function GalleryIntro() {
           </span>
         </div>
 
-        {/* Featured cinematic image */}
-        <div className="relative grade-warm">
+        {/* Featured cinematic image with magnetic tilt */}
+        <MagneticImage className="relative aspect-[16/10] w-full grade-warm sm:aspect-[21/9]" maxTilt={4} parallax={12}>
           <RevealImage
             src={featured.src}
             alt={featured.title}
             variant="mask-center"
-            className="aspect-[16/10] w-full sm:aspect-[21/9]"
+            className="h-full w-full"
             sizes="(max-width: 768px) 100vw, 100vw"
             priority
           />
@@ -67,7 +68,7 @@ export function GalleryIntro() {
               <span>#{String(3).padStart(3, "0")}</span>
             </div>
           </div>
-        </div>
+        </MagneticImage>
 
         {/* Intro text */}
         <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-12">

@@ -61,11 +61,20 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     // Refresh ScrollTrigger after fonts/images settle.
     const refreshTimer = window.setTimeout(() => ScrollTrigger.refresh(), 600);
 
+    // Also refresh when web fonts load (layout shift correction)
+    const onFontsReady = () => ScrollTrigger.refresh();
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(onFontsReady);
+    }
+    // Refresh when the window loads (all images)
+    window.addEventListener("load", onFontsReady);
+
     return () => {
       document.removeEventListener("click", handleAnchor);
       gsap.ticker.remove(onTick);
       lenis.destroy();
       window.clearTimeout(refreshTimer);
+      window.removeEventListener("load", onFontsReady);
     };
   }, []);
 

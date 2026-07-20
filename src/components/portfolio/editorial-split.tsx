@@ -4,6 +4,7 @@ import { MODEL } from "./data";
 import { RevealImage } from "./reveal-image";
 import { SplitText } from "./split-text";
 import { Magnetic } from "./magnetic";
+import { MagneticImage } from "./magnetic-image";
 import { ArrowUpRight } from "lucide-react";
 
 /**
@@ -18,17 +19,17 @@ export function EditorialSplit() {
     <section className="relative bg-ink">
       <div className="relative mx-auto max-w-[1600px] px-5 py-20 sm:px-8 sm:py-28">
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">
-          {/* Large image */}
+          {/* Large image with magnetic tilt + parallax */}
           <div className="lg:col-span-8">
-            <div className="relative grade-champagne">
+            <MagneticImage className="relative aspect-[16/10] w-full shadow-collage grade-champagne">
               <RevealImage
                 src="/portfolio/gallery-14.jpg"
                 alt="Editorial — Corridor"
                 variant="mask-left"
-                className="aspect-[16/10] w-full shadow-collage"
+                className="h-full w-full"
                 sizes="(max-width: 1024px) 100vw, 66vw"
               />
-            </div>
+            </MagneticImage>
           </div>
 
           {/* Pull quote */}

@@ -16,21 +16,40 @@ import { cn } from "@/lib/utils";
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const [compressed, setCompressed] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     let lastY = window.scrollY;
+    let lastTime = performance.now();
+    let raf = 0;
+
     const onScroll = () => {
-      const y = window.scrollY;
-      setScrolled(y > 24);
-      // hide on scroll-down, reveal on scroll-up (after 120px threshold)
-      if (y > 120 && y > lastY + 4) setHidden(true);
-      else if (y < lastY - 4) setHidden(false);
-      lastY = y;
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const now = performance.now();
+        const dt = Math.max(1, now - lastTime);
+        const velocity = Math.abs(y - lastY) / dt; // px per ms
+
+        setScrolled(y > 24);
+        // Compress (shrink padding) on fast scroll, relax on slow
+        setCompressed(velocity > 1.5 && y > 100);
+        // Hide on scroll-down, reveal on scroll-up (after 120px threshold)
+        if (y > 120 && y > lastY + 4) setHidden(true);
+        else if (y < lastY - 4) setHidden(false);
+
+        lastY = y;
+        lastTime = now;
+        raf = 0;
+      });
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
   return (
@@ -42,7 +61,8 @@ export function Navbar() {
           : "translate-y-0",
         scrolled
           ? "glass-dark border-b border-white/10 py-3"
-          : "bg-transparent py-5"
+          : "bg-transparent py-5",
+        compressed && "py-1.5 opacity-80"
       )}
     >
       <nav className="mx-auto flex max-w-[1600px] items-center justify-between px-5 sm:px-8">

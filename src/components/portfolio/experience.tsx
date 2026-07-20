@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { CREDITS, MODEL } from "./data";
 import { SplitText } from "./split-text";
 import { ScrambleText } from "./text-effects";
+import { Counter } from "./counter";
 import { Marquee } from "./marquee";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -95,7 +96,7 @@ export function Experience() {
             Experience — 04 · Fashion Houses
           </ScrambleText>
           <span className="font-sans text-[0.55rem] uppercase tracking-wide-2 text-paper/40">
-            {String(CREDITS.houses.length).padStart(2, "0")} credits
+            <Counter to={CREDITS.houses.length} pad={2} /> credits
           </span>
         </div>
 
@@ -153,7 +154,7 @@ export function Experience() {
             Publications
           </SplitText>
           <span className="font-sans text-[0.55rem] uppercase tracking-wide-2 text-paper/40">
-            {String(CREDITS.publications.length).padStart(2, "0")} features
+            <Counter to={CREDITS.publications.length} pad={2} /> features
           </span>
         </div>
 
