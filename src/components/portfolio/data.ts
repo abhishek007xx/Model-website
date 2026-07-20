@@ -85,6 +85,12 @@ export const GALLERY: GalleryItem[] = [
   { src: "/portfolio/gallery-10.jpg", title: "Terracotta",    category: "Campaign",  aspect: "std" },
   { src: "/portfolio/gallery-11.jpg", title: "Detail",        category: "Beauty",    aspect: "square" },
   { src: "/portfolio/gallery-12.jpg", title: "Silhouette",    category: "Editorial", aspect: "tall" },
+  { src: "/portfolio/gallery-13.jpg", title: "Sculptural",    category: "Editorial", aspect: "tall" },
+  { src: "/portfolio/gallery-14.jpg", title: "Corridor",      category: "Editorial", aspect: "wide" },
+  { src: "/portfolio/gallery-15.jpg", title: "Repose",        category: "Beauty",    aspect: "square" },
+  { src: "/portfolio/gallery-16.jpg", title: "Dusk",          category: "Campaign",  aspect: "std" },
+  { src: "/portfolio/gallery-17.jpg", title: "Fabric in Motion", category: "Beauty", aspect: "square" },
+  { src: "/portfolio/gallery-18.jpg", title: "Sunlit Room",   category: "Editorial", aspect: "tall" },
 ];
 
 // Experience — publications & houses she has worked with
@@ -111,35 +117,40 @@ export const CREDITS: { publications: string[]; houses: string[] } = {
   ],
 };
 
-// Services she offers
+// Services she offers — each with a representative image
 export const SERVICES: {
   icon: string;
   title: string;
   description: string;
+  image: string;
 }[] = [
   {
     icon: "Camera",
     title: "Editorial",
     description:
       "Magazine editorials, covers, and artistic collaborations with photographers and creative directors worldwide.",
+    image: "/portfolio/gallery-13.jpg",
   },
   {
     icon: "Footprints",
     title: "Runway",
     description:
       "Fashion week appearances for couture and ready-to-wear houses — show openings, closings, and exclusives.",
+    image: "/portfolio/gallery-9.jpg",
   },
   {
     icon: "Sparkles",
     title: "Campaign",
     description:
       "Global brand campaigns across beauty, fashion, and lifestyle — print, film, and digital.",
+    image: "/portfolio/gallery-16.jpg",
   },
   {
     icon: "Clapperboard",
     title: "Film & Motion",
     description:
       "Short films, brand films, and motion editorials that extend a story beyond the still frame.",
+    image: "/portfolio/gallery-17.jpg",
   },
 ];
 

@@ -6,6 +6,7 @@ import { Stats } from "@/components/portfolio/stats";
 import { GalleryIntro } from "@/components/portfolio/gallery-intro";
 import { HorizontalGallery } from "@/components/portfolio/horizontal-gallery";
 import { Gallery } from "@/components/portfolio/gallery";
+import { EditorialSplit } from "@/components/portfolio/editorial-split";
 import { Experience } from "@/components/portfolio/experience";
 import { Services } from "@/components/portfolio/services";
 import { Contact } from "@/components/portfolio/contact";
@@ -38,10 +39,13 @@ export default function Home() {
         <SectionDivider variant="wedge-up" from="bg-ink" to="bg-paper" />
         <Gallery />
 
+        {/* Editorial interlude (ink, image-led pull quote) */}
+        <EditorialSplit />
+
         {/* Experience (ink, pinned horizontal credits) */}
         <Experience />
 
-        {/* Services (paper) */}
+        {/* Services (ink, image-header cards) */}
         <Services />
 
         {/* Contact (ink) */}

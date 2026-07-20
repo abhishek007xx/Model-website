@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   Camera,
   Footprints,
@@ -10,8 +11,8 @@ import {
 } from "lucide-react";
 import { SERVICES, MODEL } from "./data";
 import { SplitText } from "./split-text";
-import { GlassHover } from "./micro-interactions";
 import { Magnetic } from "./magnetic";
+import { RevealImage } from "./reveal-image";
 
 const ICONS: Record<string, LucideIcon> = {
   Camera,
@@ -44,38 +45,55 @@ export function Services() {
           </SplitText>
         </div>
 
-        {/* Service cards — glass hover with light sweep */}
+        {/* Service cards — image header + glass body */}
         <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {SERVICES.map((s, i) => {
             const Icon = ICONS[s.icon] ?? Camera;
             return (
-              <Magnetic key={s.title} strength={0.08}>
-                <GlassHover className="group relative h-full p-8">
-                  {/* number */}
-                  <span className="absolute left-5 top-5 font-sans text-[0.5rem] uppercase tracking-wide-2 text-paper/35">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  {/* arrow */}
-                  <ArrowUpRight className="absolute right-5 top-5 h-4 w-4 text-paper/30 transition-all duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-champagne" />
-                  {/* icon */}
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full border border-paper/25 text-paper transition-all duration-500 group-hover:bg-paper group-hover:text-ink">
-                    <Icon className="h-5 w-5" />
-                  </span>
-                  {/* title */}
-                  <h3 className="mt-8 font-serif text-2xl font-medium tracking-tight text-paper">
-                    {s.title}
-                  </h3>
-                  {/* description */}
-                  <p className="mt-3 text-sm leading-relaxed text-paper/60">
-                    {s.description}
-                  </p>
-                  {/* bottom line */}
-                  <div className="mt-6 flex items-center gap-2 font-sans text-[0.5rem] uppercase tracking-wide-2 text-paper/35">
-                    <span>0{i + 1}</span>
-                    <span className="h-2 w-px bg-paper/20" />
-                    <span>{MODEL.season}</span>
+              <Magnetic key={s.title} strength={0.06}>
+                <div className="group relative h-full overflow-hidden border border-paper/15 bg-paper/[0.03] backdrop-blur-sm transition-all duration-700 hover:border-paper/30 hover:shadow-soft">
+                  {/* image header with reveal */}
+                  <div className="relative aspect-[4/3] w-full overflow-hidden">
+                    <RevealImage
+                      src={s.image}
+                      alt={s.title}
+                      variant={i % 2 === 0 ? "mask-bottom" : "blur-sharp"}
+                      className="h-full w-full"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    />
+                    {/* gradient overlay */}
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-transparent" />
+                    {/* moving light sweep on hover */}
+                    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+                      <div className="absolute -inset-y-4 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 transition-all duration-1000 ease-out group-hover:left-[120%] group-hover:opacity-100" />
+                    </div>
+                    {/* number + icon overlay */}
+                    <span className="absolute left-4 top-4 font-sans text-[0.5rem] uppercase tracking-wide-2 text-paper/70">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-paper/30 bg-ink/40 text-paper backdrop-blur-sm transition-all duration-500 group-hover:bg-paper group-hover:text-ink">
+                      <Icon className="h-4 w-4" />
+                    </span>
                   </div>
-                </GlassHover>
+
+                  {/* body */}
+                  <div className="relative p-6">
+                    <div className="flex items-start justify-between">
+                      <h3 className="font-serif text-2xl font-medium tracking-tight text-paper">
+                        {s.title}
+                      </h3>
+                      <ArrowUpRight className="h-4 w-4 text-paper/30 transition-all duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-champagne" />
+                    </div>
+                    <p className="mt-3 text-sm leading-relaxed text-paper/60">
+                      {s.description}
+                    </p>
+                    <div className="mt-6 flex items-center gap-2 font-sans text-[0.5rem] uppercase tracking-wide-2 text-paper/35">
+                      <span>0{i + 1}</span>
+                      <span className="h-2 w-px bg-paper/20" />
+                      <span>{MODEL.season}</span>
+                    </div>
+                  </div>
+                </div>
               </Magnetic>
             );
           })}

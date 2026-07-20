@@ -29,7 +29,23 @@ export function Hero() {
     const ctx = gsap.context(() => {
       if (reduce) return;
 
-      // 1. Slow cinematic Ken Burns zoom on the background image.
+      // 0. Chromatic entrance — RGB split resolves to sharp on load
+      const introTl = gsap.timeline({ delay: 0.2 });
+      introTl.fromTo(
+        bgImg.current,
+        {
+          filter: "drop-shadow(8px 0 0 rgba(255,0,80,0.4)) drop-shadow(-8px 0 0 rgba(0,200,255,0.4)) blur(6px)",
+          opacity: 0,
+        },
+        {
+          filter: "drop-shadow(0 0 0 rgba(255,0,80,0)) drop-shadow(0 0 0 rgba(0,200,255,0)) blur(0px)",
+          opacity: 1,
+          duration: 2.2,
+          ease: "power3.out",
+        }
+      );
+
+      // 1. Slow cinematic Ken Burns zoom on the background image (scrubbed).
       gsap.fromTo(
         bgImg.current,
         { scale: 1.12 },

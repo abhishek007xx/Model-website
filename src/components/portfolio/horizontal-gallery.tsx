@@ -12,12 +12,14 @@ gsap.registerPlugin(ScrollTrigger);
 // Curated selection for the horizontal filmstrip — varied aspects.
 const HORIZONTAL_ITEMS = [
   GALLERY[0], // Quiet Strength — tall
-  GALLERY[6], // Reverie — wide
+  GALLERY[13], // Corridor — wide
   GALLERY[3], // Linen & Light — std
   GALLERY[8], // In Motion — tall
   GALLERY[4], // Golden Hour — square
-  GALLERY[10], // Detail — square
+  GALLERY[14], // Repose — square
   GALLERY[5], // Noir — tall
+  GALLERY[12], // Sculptural — tall
+  GALLERY[17], // Sunlit Room — tall
 ];
 
 const aspectClass: Record<string, string> = {

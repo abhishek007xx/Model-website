@@ -11,24 +11,30 @@ import { cn } from "@/lib/utils";
 
 const CATEGORIES = ["All", "Editorial", "Beauty", "Runway", "Campaign"];
 
-// Each image gets a unique reveal variant — no two adjacent share the same.
+// Each image gets a unique reveal variant — premium variety, no repetition.
 const VARIANTS: RevealVariant[] = [
-  "mask-left",
-  "blur-sharp",
-  "grayscale-color",
-  "mask-bottom",
-  "fade-up",
-  "scale-zoom",
-  "mask-center",
-  "parallax",
-  "mask-left",
-  "blur-sharp",
-  "grayscale-color",
-  "fade-up",
+  "chromatic",      // 1
+  "liquid",         // 2
+  "mask-diagonal",  // 3
+  "mask-bottom",    // 4
+  "blur-sharp",     // 5
+  "scale-zoom",     // 6
+  "mask-center",    // 7
+  "parallax",       // 8
+  "mask-left",      // 9
+  "chromatic",      // 10
+  "grayscale-color",// 11
+  "mask-right",     // 12
+  "liquid",         // 13
+  "mask-diagonal",  // 14
+  "blur-sharp",     // 15
+  "mask-top",       // 16
+  "chromatic",      // 17
+  "fade-up",        // 18
 ];
 
 // Slight organic rotation per slot for the "scattered photos" feel.
-const ROTATIONS = [-4, 3, -2, 4, -3, 2, -4, 3, -2, 4, -3, 2];
+const ROTATIONS = [-4, 3, -2, 4, -3, 2, -4, 3, -2, 4, -3, 2, -3, 4, -2, 3, -4, 2];
 
 // Grid placement on desktop (12-col grid) — asymmetric, never templated.
 const PLACEMENTS = [
@@ -44,6 +50,12 @@ const PLACEMENTS = [
   "lg:col-span-4 lg:col-start-2 lg:mt-8", // 10 — std, inset
   "lg:col-span-3 lg:col-start-7", // 11 — square
   "lg:col-span-4 lg:col-start-10 lg:mt-16", // 12 — tall, right offset
+  "lg:col-span-4 lg:col-start-1 lg:mt-12", // 13 — tall, left offset
+  "lg:col-span-5 lg:col-start-6", // 14 — wide, center
+  "lg:col-span-3 lg:col-start-1 lg:mt-8", // 15 — square, left
+  "lg:col-span-4 lg:col-start-5 lg:mt-16", // 16 — std, center offset
+  "lg:col-span-3 lg:col-start-10", // 17 — square, right
+  "lg:col-span-4 lg:col-start-2 lg:mt-12", // 18 — tall, inset offset
 ];
 
 const aspectClass: Record<GalleryItem["aspect"], string> = {
@@ -131,7 +143,7 @@ export function Gallery() {
                   <div
                     style={{ "--rot": `${rotation}deg` } as React.CSSProperties}
                     className={cn(
-                      "relative overflow-hidden shadow-collage transition-transform duration-700 ease-out rotate-[var(--rot)] group-hover:rotate-0 group-hover:scale-[1.03] group-hover:z-20",
+                      "chromatic-hover relative overflow-hidden shadow-collage transition-transform duration-700 ease-out rotate-[var(--rot)] group-hover:rotate-0 group-hover:scale-[1.03] group-hover:z-20",
                       aspectClass[item.aspect]
                     )}
                   >

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -111,6 +112,26 @@ export function Contact() {
                   </a>
                 </Magnetic>
               ))}
+            </div>
+
+            {/* Featured editorial image */}
+            <div className="mt-10 relative aspect-[16/10] w-full overflow-hidden border border-paper/15">
+              <Image
+                src="/portfolio/gallery-15.jpg"
+                alt={`${MODEL.name} editorial`}
+                fill
+                sizes="(max-width: 1024px) 100vw, 40vw"
+                className="object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-5">
+                <p className="font-sans text-[0.5rem] uppercase tracking-wide-2 text-paper/55">
+                  Now booking · {MODEL.season}
+                </p>
+                <p className="mt-1 font-serif text-xl italic text-paper">
+                  &ldquo;Every frame is a conversation.&rdquo;
+                </p>
+              </div>
             </div>
           </div>
 
