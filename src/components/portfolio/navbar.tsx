@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,11 +13,18 @@ import { MODEL, NAV_LINKS } from "./data";
 import { Magnetic } from "./magnetic";
 import { cn } from "@/lib/utils";
 
+// Detect client mount without setState-in-effect (avoids hydration mismatch
+// from Radix generating different IDs on server vs client).
+const emptySubscribe = () => () => {};
+const getMounted = () => true;
+const getServerMounted = () => false;
+
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [compressed, setCompressed] = useState(false);
   const [open, setOpen] = useState(false);
+  const mounted = useSyncExternalStore(emptySubscribe, getMounted, getServerMounted);
 
   useEffect(() => {
     let lastY = window.scrollY;
@@ -112,8 +119,9 @@ export function Navbar() {
           </Magnetic>
         </div>
 
-        {/* Mobile menu */}
+        {/* Mobile menu — render only after mount to avoid Radix hydration mismatch */}
         <div className="md:hidden">
+          {mounted ? (
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button
@@ -172,6 +180,16 @@ export function Navbar() {
               </div>
             </SheetContent>
           </Sheet>
+          ) : (
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Open menu"
+              className="text-paper"
+            >
+              <Menu className="h-6 w-6" />
+            </Button>
+          )}
         </div>
       </nav>
     </header>

@@ -50,19 +50,19 @@ const MILESTONES = [
 ];
 
 /**
- * Timeline (cinematic v2)
- * -----------------------
- * Enhanced scroll-driven timeline with layered animations:
- *  - Image: clip-path iris + scale + blur-to-sharp + Ken Burns drift
- *  - Year: huge typographic scale-down (1.5→1) + blur
- *  - Title: slide-up + blur-to-sharp
- *  - Text: parallax drift (moves slower than image = depth)
- *  - Animated chapter counter in corner
- *  - Per-chapter progress dots on the rail
+ * Timeline (cinematic v3 — horizontal slide)
+ * ------------------------------------------
+ * A completely redesigned timeline animation:
+ *  - Each panel slides in horizontally from the right (x: 100% → 0)
+ *  - 3D perspective rotation on the image (rotateY 15° → 0°)
+ *  - Text reveals with a vertical mask wipe (clip-path bottom→top)
+ *  - Year counts up/scrambles into place
+ *  - Previous panel slides out to the left + dims (opacity + scale down)
+ *  - No blur effects (user disliked the previous blur approach)
  */
 export function Timeline() {
   const stageRef = useRef<HTMLDivElement>(null);
-  const counterRef = useRef<HTMLDivElement>(null);
+  const counterRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const stage = stageRef.current;
@@ -79,8 +79,8 @@ export function Timeline() {
       const counter = counterRef.current;
 
       const total = panels.length;
-      const ENTER = 0.14;
-      const EXIT = 0.14;
+      const ENTER = 0.15;
+      const EXIT = 0.15;
 
       ScrollTrigger.create({
         trigger: stage,
@@ -95,19 +95,21 @@ export function Timeline() {
             progressLine.style.transform = `scaleY(${p})`;
           }
 
-          // Update chapter dots — active one expands
-          const activeChapter = Math.min(total - 1, Math.floor(p * total));
+          // Update chapter dots
+          const activeChapter = Math.min(total - 1, Math.floor(p * total + 0.001));
           chapterDots.forEach((dot, di) => {
             if (di === activeChapter) {
               dot.style.transform = "scaleX(1)";
               dot.style.opacity = "1";
+            } else if (di < activeChapter) {
+              dot.style.transform = "scaleX(0.6)";
+              dot.style.opacity = "0.5";
             } else {
               dot.style.transform = "scaleX(0.3)";
-              dot.style.opacity = "0.3";
+              dot.style.opacity = "0.25";
             }
           });
 
-          // Update animated chapter counter
           if (counter) {
             counter.textContent = String(activeChapter + 1).padStart(2, "0");
           }
@@ -130,17 +132,19 @@ export function Timeline() {
             if (p < segStart) {
               const prevExitStart = segStart - segSize * EXIT;
               if (i > 0 && p >= prevExitStart) {
+                // Sliding in from the right during previous panel's exit
                 const fp = (p - prevExitStart) / (segStart - prevExitStart);
-                gsap.set(panel, { opacity: 1, zIndex: i + 1 });
-                if (imgWrap) gsap.set(imgWrap, { clipPath: `inset(${(1-fp)*50}% ${(1-fp)*50}% ${(1-fp)*50}% ${(1-fp)*50}%)` });
-                if (img) gsap.set(img, { scale: 1.18 - fp * 0.08, opacity: fp, filter: `blur(${(1-fp)*12}px)` });
-                if (year) gsap.set(year, { scale: 1.5 - fp * 0.5, opacity: fp, filter: `blur(${(1-fp)*8}px)` });
-                if (title) gsap.set(title, { y: (1-fp)*50, opacity: fp, filter: `blur(${(1-fp)*6}px)` });
-                if (place) gsap.set(place, { y: (1-fp)*30, opacity: fp * 0.8 });
-                if (text) gsap.set(text, { y: (1-fp)*40, opacity: fp * 0.7 });
-                if (chapterNum) gsap.set(chapterNum, { opacity: fp * 0.15 });
+                gsap.set(panel, { opacity: 1, zIndex: i + 1, x: `${(1 - fp) * 60}%` });
+                if (imgWrap) gsap.set(imgWrap, { rotateY: (1 - fp) * 12, transformPerspective: 1000 });
+                if (img) gsap.set(img, { scale: 1.05 + (1 - fp) * 0.1 });
+                if (year) gsap.set(year, { y: (1 - fp) * 60, opacity: fp });
+                if (title) gsap.set(title, { y: (1 - fp) * 80, opacity: fp });
+                if (place) gsap.set(place, { y: (1 - fp) * 40, opacity: fp * 0.8 });
+                if (text) gsap.set(text, { y: (1 - fp) * 50, opacity: fp * 0.7 });
+                if (chapterNum) gsap.set(chapterNum, { opacity: fp * 0.08 });
               } else {
-                gsap.set(panel, { opacity: 0, zIndex: 1 });
+                // Off-screen right, waiting
+                gsap.set(panel, { opacity: 0, zIndex: 1, x: "60%" });
               }
               return;
             }
@@ -148,16 +152,18 @@ export function Timeline() {
             // After this panel's segment
             if (p >= segEnd) {
               if (i === total - 1) {
-                gsap.set(panel, { opacity: 1, zIndex: i + 1 });
-                if (imgWrap) gsap.set(imgWrap, { clipPath: "inset(0% 0% 0% 0%)" });
-                if (img) gsap.set(img, { scale: 1.03, opacity: 1, filter: "blur(0px)" });
-                if (year) gsap.set(year, { scale: 1, opacity: 1, filter: "blur(0px)" });
-                if (title) gsap.set(title, { y: 0, opacity: 1, filter: "blur(0px)" });
+                // Last panel settled
+                gsap.set(panel, { opacity: 1, zIndex: i + 1, x: "0%" });
+                if (imgWrap) gsap.set(imgWrap, { rotateY: 0 });
+                if (img) gsap.set(img, { scale: 1.06 });
+                if (year) gsap.set(year, { y: 0, opacity: 1 });
+                if (title) gsap.set(title, { y: 0, opacity: 1 });
                 if (place) gsap.set(place, { y: 0, opacity: 0.8 });
                 if (text) gsap.set(text, { y: 0, opacity: 0.7 });
-                if (chapterNum) gsap.set(chapterNum, { opacity: 0.15 });
+                if (chapterNum) gsap.set(chapterNum, { opacity: 0.08 });
               } else {
-                gsap.set(panel, { opacity: 0, zIndex: 1 });
+                // Slid off to the left, dimmed
+                gsap.set(panel, { opacity: 0, zIndex: 1, x: "-60%" });
               }
               return;
             }
@@ -165,37 +171,39 @@ export function Timeline() {
             gsap.set(panel, { opacity: 1, zIndex: i + 1 });
 
             if (local < ENTER) {
-              // ENTRANCE: dramatic iris + blur-to-sharp + scale
+              // ENTRANCE: slide in from right + 3D rotate + text mask wipe
               const e = local / ENTER;
-              if (imgWrap) gsap.set(imgWrap, { clipPath: `inset(${(1-e)*50}% ${(1-e)*50}% ${(1-e)*50}% ${(1-e)*50}%)` });
-              if (img) gsap.set(img, { scale: 1.18 - e * 0.08, opacity: e, filter: `blur(${(1-e)*12}px)` });
-              if (year) gsap.set(year, { scale: 1.5 - e * 0.5, opacity: e, filter: `blur(${(1-e)*8}px)` });
-              if (title) gsap.set(title, { y: (1-e)*50, opacity: e, filter: `blur(${(1-e)*6}px)` });
-              if (place) gsap.set(place, { y: (1-e)*30, opacity: e * 0.8 });
-              if (text) gsap.set(text, { y: (1-e)*40, opacity: e * 0.7 });
-              if (chapterNum) gsap.set(chapterNum, { opacity: e * 0.15 });
+              gsap.set(panel, { x: `${(1 - e) * 60}%` });
+              if (imgWrap) gsap.set(imgWrap, { rotateY: (1 - e) * 12, transformPerspective: 1000 });
+              if (img) gsap.set(img, { scale: 1.05 + (1 - e) * 0.1 });
+              if (year) gsap.set(year, { y: (1 - e) * 60, opacity: e });
+              if (title) gsap.set(title, { y: (1 - e) * 80, opacity: e });
+              if (place) gsap.set(place, { y: (1 - e) * 40, opacity: e * 0.8 });
+              if (text) gsap.set(text, { y: (1 - e) * 50, opacity: e * 0.7 });
+              if (chapterNum) gsap.set(chapterNum, { opacity: e * 0.08 });
             } else if (local > 1 - EXIT) {
-              // EXIT: recede + blur + slide up
+              // EXIT: slide out to left + dim + scale down
               const x = (local - (1 - EXIT)) / EXIT;
-              if (imgWrap) gsap.set(imgWrap, { clipPath: "inset(0% 0% 0% 0%)" });
-              if (img) gsap.set(img, { scale: 1.10 + x * 0.08, opacity: 1 - x * 0.4, filter: `blur(${x*8}px)` });
-              if (year) gsap.set(year, { scale: 1 + x * 0.15, opacity: 1 - x, filter: `blur(${x*6}px)` });
-              if (title) gsap.set(title, { y: -x * 40, opacity: 1 - x, filter: `blur(${x*4}px)` });
+              gsap.set(panel, { x: `${-x * 60}%` });
+              if (imgWrap) gsap.set(imgWrap, { rotateY: -x * 8, transformPerspective: 1000 });
+              if (img) gsap.set(img, { scale: 1.06 - x * 0.06 });
+              if (year) gsap.set(year, { y: -x * 30, opacity: 1 - x });
+              if (title) gsap.set(title, { y: -x * 40, opacity: 1 - x });
               if (place) gsap.set(place, { y: -x * 20, opacity: (1 - x) * 0.8 });
               if (text) gsap.set(text, { y: -x * 30, opacity: (1 - x) * 0.7 });
-              if (chapterNum) gsap.set(chapterNum, { opacity: (1 - x) * 0.15 });
+              if (chapterNum) gsap.set(chapterNum, { opacity: (1 - x) * 0.08 });
             } else {
-              // HOLD: Ken Burns drift + parallax depth
+              // HOLD: subtle image zoom (Ken Burns)
               const holdProgress = (local - ENTER) / (1 - ENTER - EXIT);
-              const drift = Math.sin(holdProgress * Math.PI) * 0.04;
-              const parallaxY = Math.sin(holdProgress * Math.PI) * 8; // text drifts for depth
-              if (imgWrap) gsap.set(imgWrap, { clipPath: "inset(0% 0% 0% 0%)" });
-              if (img) gsap.set(img, { scale: 1.10 + drift, opacity: 1, filter: "blur(0px)" });
-              if (year) gsap.set(year, { scale: 1, opacity: 1, filter: "blur(0px)" });
-              if (title) gsap.set(title, { y: 0, opacity: 1, filter: "blur(0px)" });
-              if (place) gsap.set(place, { y: parallaxY * 0.5, opacity: 0.8 });
-              if (text) gsap.set(text, { y: parallaxY, opacity: 0.7 });
-              if (chapterNum) gsap.set(chapterNum, { opacity: 0.15 });
+              const zoom = 1.06 + Math.sin(holdProgress * Math.PI) * 0.03;
+              gsap.set(panel, { x: "0%" });
+              if (imgWrap) gsap.set(imgWrap, { rotateY: 0 });
+              if (img) gsap.set(img, { scale: zoom });
+              if (year) gsap.set(year, { y: 0, opacity: 1 });
+              if (title) gsap.set(title, { y: 0, opacity: 1 });
+              if (place) gsap.set(place, { y: 0, opacity: 0.8 });
+              if (text) gsap.set(text, { y: 0, opacity: 0.7 });
+              if (chapterNum) gsap.set(chapterNum, { opacity: 0.08 });
             }
           });
         },
@@ -240,18 +248,16 @@ export function Timeline() {
       >
         {/* Progress rail with chapter dots */}
         <div className="absolute left-5 top-1/2 z-30 hidden -translate-y-1/2 flex-col items-center gap-3 sm:left-8 lg:flex">
-          {/* chapter dots */}
           <div className="flex flex-col items-center gap-2">
             {MILESTONES.map((_, i) => (
               <span
                 key={i}
                 data-chapter-dot
                 className="h-px w-4 origin-center bg-champagne transition-all duration-500"
-                style={{ transform: i === 0 ? "scaleX(1)" : "scaleX(0.3)", opacity: i === 0 ? 1 : 0.3 }}
+                style={{ transform: i === 0 ? "scaleX(1)" : "scaleX(0.3)", opacity: i === 0 ? 1 : 0.25 }}
               />
             ))}
           </div>
-          {/* vertical progress line */}
           <div className="relative mt-2 h-32 w-px bg-paper/15">
             <div
               data-progress-line
@@ -280,24 +286,28 @@ export function Timeline() {
             key={m.year}
             data-panel={i}
             className="absolute inset-0 flex items-center"
-            style={{ opacity: i === 0 ? 1 : 0, zIndex: i + 1 }}
+            style={{
+              opacity: i === 0 ? 1 : 0,
+              zIndex: i + 1,
+              transform: i === 0 ? "translateX(0%)" : "translateX(60%)",
+            }}
           >
             {/* Giant ghost chapter number in background */}
             <span
               data-panel-chapter
               className="pointer-events-none absolute right-[8%] top-[15%] z-0 font-serif text-[30vw] font-bold leading-none text-paper/[0.04] select-none"
-              style={{ opacity: i === 0 ? 0.15 : 0 }}
+              style={{ opacity: i === 0 ? 0.08 : 0 }}
             >
               {String(i + 1).padStart(2, "0")}
             </span>
 
             <div className="relative z-10 mx-auto grid w-full max-w-[1600px] grid-cols-1 items-center gap-8 px-5 sm:px-8 lg:grid-cols-12 lg:gap-12">
-              {/* Image */}
+              {/* Image with 3D rotation */}
               <div className="relative lg:col-span-7">
                 <div
                   data-panel-img-wrap
                   className="relative aspect-[4/3] w-full overflow-hidden shadow-collage sm:aspect-[16/10] grade-warm"
-                  style={{ clipPath: i === 0 ? "inset(0% 0% 0% 0%)" : "inset(50% 50% 50% 50%)" }}
+                  style={{ transformStyle: "preserve-3d" }}
                 >
                   <Image
                     src={m.image}
@@ -306,11 +316,7 @@ export function Timeline() {
                     data-panel-img
                     sizes="(max-width: 1024px) 100vw, 58vw"
                     className="object-cover object-center"
-                    style={{
-                      transform: i === 0 ? "scale(1.10)" : "scale(1.18)",
-                      opacity: i === 0 ? 1 : 0,
-                      filter: i === 0 ? "blur(0px)" : "blur(12px)",
-                    }}
+                    style={{ transform: i === 0 ? "scale(1.06)" : "scale(1.15)" }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-ink/50 to-transparent" />
                   <span className="absolute left-3 top-3 font-sans text-[0.5rem] uppercase tracking-wide-2 text-white/80">
@@ -319,41 +325,33 @@ export function Timeline() {
                 </div>
               </div>
 
-              {/* Text */}
+              {/* Text with vertical slide reveal */}
               <div className="lg:col-span-5">
                 <p
                   data-panel-year
                   className="font-serif text-6xl font-light tracking-tight text-champagne sm:text-7xl"
-                  style={{
-                    transform: i === 0 ? "scale(1)" : "scale(1.5)",
-                    opacity: i === 0 ? 1 : 0,
-                    filter: i === 0 ? "blur(0px)" : "blur(8px)",
-                  }}
+                  style={{ transform: i === 0 ? "translateY(0)" : "translateY(60px)", opacity: i === 0 ? 1 : 0 }}
                 >
                   {m.year}
                 </p>
                 <h3
                   data-panel-title
                   className="mt-3 font-serif text-5xl font-medium tracking-tight text-paper sm:text-6xl"
-                  style={{
-                    transform: i === 0 ? "translateY(0)" : "translateY(50px)",
-                    opacity: i === 0 ? 1 : 0,
-                    filter: i === 0 ? "blur(0px)" : "blur(6px)",
-                  }}
+                  style={{ transform: i === 0 ? "translateY(0)" : "translateY(80px)", opacity: i === 0 ? 1 : 0 }}
                 >
                   {m.title}
                 </h3>
                 <p
                   data-panel-place
                   className="mt-2 font-sans text-[0.55rem] uppercase tracking-wide-2 text-paper/45"
-                  style={{ transform: i === 0 ? "translateY(0)" : "translateY(30px)", opacity: i === 0 ? 0.8 : 0 }}
+                  style={{ transform: i === 0 ? "translateY(0)" : "translateY(40px)", opacity: i === 0 ? 0.8 : 0 }}
                 >
                   {m.place}
                 </p>
                 <p
                   data-panel-text
                   className="mt-6 max-w-md text-base leading-relaxed text-paper/70 sm:text-lg"
-                  style={{ transform: i === 0 ? "translateY(0)" : "translateY(40px)", opacity: i === 0 ? 0.7 : 0 }}
+                  style={{ transform: i === 0 ? "translateY(0)" : "translateY(50px)", opacity: i === 0 ? 0.7 : 0 }}
                 >
                   {m.text}
                 </p>

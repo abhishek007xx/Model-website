@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Mail, Phone, Instagram, MapPin, Loader2, Check, ArrowUpRight } from "lucide-react";
+import { Mail, Instagram, Facebook, Youtube, MessageCircle, MapPin, Loader2, Check, ArrowUpRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -91,13 +91,17 @@ export function Contact() {
             <div className="mt-10 space-y-3">
               {[
                 { icon: Mail, label: "Email", value: MODEL.email, href: `mailto:${MODEL.email}` },
-                { icon: Phone, label: "Phone", value: MODEL.phone, href: `tel:${MODEL.phone.replace(/[^+\d]/g, "")}` },
-                { icon: Instagram, label: "Instagram", value: MODEL.instagram, href: `https://instagram.com/${MODEL.instagram.replace("@", "")}` },
+                { icon: Instagram, label: "Instagram", value: MODEL.socials[0].handle, href: MODEL.socials[0].href },
+                { icon: MessageCircle, label: "Threads", value: MODEL.socials[1].handle, href: MODEL.socials[1].href },
+                { icon: Facebook, label: "Facebook", value: MODEL.socials[2].handle, href: MODEL.socials[2].href },
+                { icon: Youtube, label: "YouTube", value: MODEL.socials[3].handle, href: MODEL.socials[3].href },
                 { icon: MapPin, label: "Based in", value: MODEL.location },
               ].map((c) => (
                 <Magnetic key={c.label} strength={0.1}>
                   <a
                     href={c.href ?? undefined}
+                    target={c.href && !c.href.startsWith("mailto:") ? "_blank" : undefined}
+                    rel={c.href && !c.href.startsWith("mailto:") ? "noopener noreferrer" : undefined}
                     className="group flex items-center justify-between border-b border-paper/10 pb-4 transition-colors hover:border-paper/30"
                   >
                     <span className="flex items-center gap-4">

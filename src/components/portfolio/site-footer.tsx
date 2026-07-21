@@ -57,15 +57,16 @@ export function SiteFooter() {
 
           {/* Contact with magnetic links */}
           <div className="flex flex-col gap-3 md:col-span-4">
-            <p className="font-sans text-[0.55rem] uppercase tracking-luxe text-ink/45">Booking</p>
+            <p className="font-sans text-[0.55rem] uppercase tracking-luxe text-ink/45">Booking & Socials</p>
             {[
               { label: MODEL.email, href: `mailto:${MODEL.email}` },
-              { label: MODEL.phone, href: `tel:${MODEL.phone.replace(/[^+\d]/g, "")}` },
-              { label: MODEL.instagram, href: `https://instagram.com/${MODEL.instagram.replace("@", "")}` },
+              ...MODEL.socials.map((s) => ({ label: `${s.label}: ${s.handle}`, href: s.href })),
             ].map((c) => (
               <Magnetic key={c.label} strength={0.08}>
                 <a
                   href={c.href}
+                  target={c.href.startsWith("mailto:") ? undefined : "_blank"}
+                  rel={c.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
                   className="group flex items-center justify-between border-b border-ink/10 pb-2 font-serif text-lg text-ink/80 transition-colors hover:text-ink"
                 >
                   {c.label}

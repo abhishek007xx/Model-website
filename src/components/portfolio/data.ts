@@ -18,9 +18,14 @@ export const MODEL = {
   tagline: "International Fashion Model",
   location: "Tokyo · Paris · New York",
   email: "booking@mizuhara.model",
-  phone: "+1 (212) 555-0148",
-  instagram: "@mizuhara",
   agency: "Elite Management",
+  // Social profiles
+  socials: [
+    { label: "Instagram", handle: "mizuhara_pretty", href: "https://instagram.com/mizuhara_pretty" },
+    { label: "Threads", handle: "mizuhara_pretty", href: "https://threads.net/@mizuhara_pretty" },
+    { label: "Facebook", handle: "Mizuhara prettey", href: "https://facebook.com/Mizuhara prettey" },
+    { label: "YouTube", handle: "clipcraft_op", href: "https://youtube.com/@clipcraft_op" },
+  ],
   // Hero collage images
   heroMain: "/portfolio/hero.jpg",
   heroCloseup: "/portfolio/gallery-2.jpg",
