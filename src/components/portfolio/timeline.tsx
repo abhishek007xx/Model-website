@@ -50,18 +50,19 @@ const MILESTONES = [
 ];
 
 /**
- * Timeline (cinematic)
- * --------------------
- * A scroll-driven cinematic timeline with animated panels.
- *
- * - Pin is attached to the STAGE only (after header scrolls away)
- * - Each panel: 12% animated entrance → 76% hold (with subtle Ken Burns) → 12% animated exit
- * - Entrance: image scales 1.15→1 + clip-path iris open, text slides up + fades in (staggered)
- * - Exit: image scales 1→1.08 + fades, text slides up + fades out
- * - During hold: image has a subtle continuous scale drift (Ken Burns)
+ * Timeline (cinematic v2)
+ * -----------------------
+ * Enhanced scroll-driven timeline with layered animations:
+ *  - Image: clip-path iris + scale + blur-to-sharp + Ken Burns drift
+ *  - Year: huge typographic scale-down (1.5→1) + blur
+ *  - Title: slide-up + blur-to-sharp
+ *  - Text: parallax drift (moves slower than image = depth)
+ *  - Animated chapter counter in corner
+ *  - Per-chapter progress dots on the rail
  */
 export function Timeline() {
   const stageRef = useRef<HTMLDivElement>(null);
+  const counterRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const stage = stageRef.current;
@@ -74,11 +75,12 @@ export function Timeline() {
     const ctx = gsap.context(() => {
       const panels = stage.querySelectorAll<HTMLElement>("[data-panel]");
       const progressLine = stage.querySelector<HTMLElement>("[data-progress-line]");
+      const chapterDots = stage.querySelectorAll<HTMLElement>("[data-chapter-dot]");
+      const counter = counterRef.current;
 
       const total = panels.length;
-      // 12% entrance, 76% hold, 12% exit
-      const ENTER = 0.12;
-      const EXIT = 0.12;
+      const ENTER = 0.14;
+      const EXIT = 0.14;
 
       ScrollTrigger.create({
         trigger: stage,
@@ -93,6 +95,23 @@ export function Timeline() {
             progressLine.style.transform = `scaleY(${p})`;
           }
 
+          // Update chapter dots — active one expands
+          const activeChapter = Math.min(total - 1, Math.floor(p * total));
+          chapterDots.forEach((dot, di) => {
+            if (di === activeChapter) {
+              dot.style.transform = "scaleX(1)";
+              dot.style.opacity = "1";
+            } else {
+              dot.style.transform = "scaleX(0.3)";
+              dot.style.opacity = "0.3";
+            }
+          });
+
+          // Update animated chapter counter
+          if (counter) {
+            counter.textContent = String(activeChapter + 1).padStart(2, "0");
+          }
+
           panels.forEach((panel, i) => {
             const segStart = i / total;
             const segEnd = (i + 1) / total;
@@ -105,20 +124,21 @@ export function Timeline() {
             const title = panel.querySelector<HTMLElement>("[data-panel-title]");
             const place = panel.querySelector<HTMLElement>("[data-panel-place]");
             const text = panel.querySelector<HTMLElement>("[data-panel-text]");
+            const chapterNum = panel.querySelector<HTMLElement>("[data-panel-chapter]");
 
-            // Before this panel's segment — hidden (unless entering from prev's exit)
+            // Before this panel's segment
             if (p < segStart) {
               const prevExitStart = segStart - segSize * EXIT;
               if (i > 0 && p >= prevExitStart) {
-                // Entering during previous panel's exit
                 const fp = (p - prevExitStart) / (segStart - prevExitStart);
                 gsap.set(panel, { opacity: 1, zIndex: i + 1 });
                 if (imgWrap) gsap.set(imgWrap, { clipPath: `inset(${(1-fp)*50}% ${(1-fp)*50}% ${(1-fp)*50}% ${(1-fp)*50}%)` });
-                if (img) gsap.set(img, { scale: 1.15 - fp * 0.08, opacity: fp });
-                if (year) gsap.set(year, { y: (1-fp)*40, opacity: fp });
-                if (title) gsap.set(title, { y: (1-fp)*50, opacity: fp });
+                if (img) gsap.set(img, { scale: 1.18 - fp * 0.08, opacity: fp, filter: `blur(${(1-fp)*12}px)` });
+                if (year) gsap.set(year, { scale: 1.5 - fp * 0.5, opacity: fp, filter: `blur(${(1-fp)*8}px)` });
+                if (title) gsap.set(title, { y: (1-fp)*50, opacity: fp, filter: `blur(${(1-fp)*6}px)` });
                 if (place) gsap.set(place, { y: (1-fp)*30, opacity: fp * 0.8 });
                 if (text) gsap.set(text, { y: (1-fp)*40, opacity: fp * 0.7 });
+                if (chapterNum) gsap.set(chapterNum, { opacity: fp * 0.15 });
               } else {
                 gsap.set(panel, { opacity: 0, zIndex: 1 });
               }
@@ -128,51 +148,54 @@ export function Timeline() {
             // After this panel's segment
             if (p >= segEnd) {
               if (i === total - 1) {
-                // last panel stays visible, settled
                 gsap.set(panel, { opacity: 1, zIndex: i + 1 });
                 if (imgWrap) gsap.set(imgWrap, { clipPath: "inset(0% 0% 0% 0%)" });
-                if (img) gsap.set(img, { scale: 1.02, opacity: 1 });
-                if (year) gsap.set(year, { y: 0, opacity: 1 });
-                if (title) gsap.set(title, { y: 0, opacity: 1 });
+                if (img) gsap.set(img, { scale: 1.03, opacity: 1, filter: "blur(0px)" });
+                if (year) gsap.set(year, { scale: 1, opacity: 1, filter: "blur(0px)" });
+                if (title) gsap.set(title, { y: 0, opacity: 1, filter: "blur(0px)" });
                 if (place) gsap.set(place, { y: 0, opacity: 0.8 });
                 if (text) gsap.set(text, { y: 0, opacity: 0.7 });
+                if (chapterNum) gsap.set(chapterNum, { opacity: 0.15 });
               } else {
                 gsap.set(panel, { opacity: 0, zIndex: 1 });
               }
               return;
             }
 
-            // Within this panel's segment
             gsap.set(panel, { opacity: 1, zIndex: i + 1 });
 
             if (local < ENTER) {
-              // ENTRANCE: image iris-opens + scales down, text slides up
-              const e = local / ENTER; // 0→1
+              // ENTRANCE: dramatic iris + blur-to-sharp + scale
+              const e = local / ENTER;
               if (imgWrap) gsap.set(imgWrap, { clipPath: `inset(${(1-e)*50}% ${(1-e)*50}% ${(1-e)*50}% ${(1-e)*50}%)` });
-              if (img) gsap.set(img, { scale: 1.15 - e * 0.08, opacity: e });
-              if (year) gsap.set(year, { y: (1-e)*40, opacity: e });
-              if (title) gsap.set(title, { y: (1-e)*50, opacity: e });
+              if (img) gsap.set(img, { scale: 1.18 - e * 0.08, opacity: e, filter: `blur(${(1-e)*12}px)` });
+              if (year) gsap.set(year, { scale: 1.5 - e * 0.5, opacity: e, filter: `blur(${(1-e)*8}px)` });
+              if (title) gsap.set(title, { y: (1-e)*50, opacity: e, filter: `blur(${(1-e)*6}px)` });
               if (place) gsap.set(place, { y: (1-e)*30, opacity: e * 0.8 });
               if (text) gsap.set(text, { y: (1-e)*40, opacity: e * 0.7 });
+              if (chapterNum) gsap.set(chapterNum, { opacity: e * 0.15 });
             } else if (local > 1 - EXIT) {
-              // EXIT: image scales up + fades, text slides up + fades
-              const x = (local - (1 - EXIT)) / EXIT; // 0→1
+              // EXIT: recede + blur + slide up
+              const x = (local - (1 - EXIT)) / EXIT;
               if (imgWrap) gsap.set(imgWrap, { clipPath: "inset(0% 0% 0% 0%)" });
-              if (img) gsap.set(img, { scale: 1.07 + x * 0.06, opacity: 1 - x * 0.5 });
-              if (year) gsap.set(year, { y: -x * 30, opacity: 1 - x });
-              if (title) gsap.set(title, { y: -x * 40, opacity: 1 - x });
+              if (img) gsap.set(img, { scale: 1.10 + x * 0.08, opacity: 1 - x * 0.4, filter: `blur(${x*8}px)` });
+              if (year) gsap.set(year, { scale: 1 + x * 0.15, opacity: 1 - x, filter: `blur(${x*6}px)` });
+              if (title) gsap.set(title, { y: -x * 40, opacity: 1 - x, filter: `blur(${x*4}px)` });
               if (place) gsap.set(place, { y: -x * 20, opacity: (1 - x) * 0.8 });
               if (text) gsap.set(text, { y: -x * 30, opacity: (1 - x) * 0.7 });
+              if (chapterNum) gsap.set(chapterNum, { opacity: (1 - x) * 0.15 });
             } else {
-              // HOLD: subtle Ken Burns drift on the image
-              const holdProgress = (local - ENTER) / (1 - ENTER - EXIT); // 0→1
-              const drift = Math.sin(holdProgress * Math.PI) * 0.04; // 0→0.04→0
+              // HOLD: Ken Burns drift + parallax depth
+              const holdProgress = (local - ENTER) / (1 - ENTER - EXIT);
+              const drift = Math.sin(holdProgress * Math.PI) * 0.04;
+              const parallaxY = Math.sin(holdProgress * Math.PI) * 8; // text drifts for depth
               if (imgWrap) gsap.set(imgWrap, { clipPath: "inset(0% 0% 0% 0%)" });
-              if (img) gsap.set(img, { scale: 1.07 + drift, opacity: 1 });
-              if (year) gsap.set(year, { y: 0, opacity: 1 });
-              if (title) gsap.set(title, { y: 0, opacity: 1 });
-              if (place) gsap.set(place, { y: 0, opacity: 0.8 });
-              if (text) gsap.set(text, { y: 0, opacity: 0.7 });
+              if (img) gsap.set(img, { scale: 1.10 + drift, opacity: 1, filter: "blur(0px)" });
+              if (year) gsap.set(year, { scale: 1, opacity: 1, filter: "blur(0px)" });
+              if (title) gsap.set(title, { y: 0, opacity: 1, filter: "blur(0px)" });
+              if (place) gsap.set(place, { y: parallaxY * 0.5, opacity: 0.8 });
+              if (text) gsap.set(text, { y: parallaxY, opacity: 0.7 });
+              if (chapterNum) gsap.set(chapterNum, { opacity: 0.15 });
             }
           });
         },
@@ -210,18 +233,45 @@ export function Timeline() {
         </div>
       </div>
 
-      {/* Pinned stage — pin triggers ONLY on this element */}
+      {/* Pinned stage */}
       <div
         ref={stageRef}
         className="relative h-[100svh] min-h-[600px] overflow-hidden bg-ink"
       >
-        {/* Progress rail */}
-        <div className="absolute left-5 top-1/2 z-30 hidden h-48 w-px -translate-y-1/2 bg-paper/15 sm:left-8 lg:block">
-          <div
-            data-progress-line
-            className="h-full w-full origin-top bg-champagne"
-            style={{ transform: "scaleY(0)" }}
-          />
+        {/* Progress rail with chapter dots */}
+        <div className="absolute left-5 top-1/2 z-30 hidden -translate-y-1/2 flex-col items-center gap-3 sm:left-8 lg:flex">
+          {/* chapter dots */}
+          <div className="flex flex-col items-center gap-2">
+            {MILESTONES.map((_, i) => (
+              <span
+                key={i}
+                data-chapter-dot
+                className="h-px w-4 origin-center bg-champagne transition-all duration-500"
+                style={{ transform: i === 0 ? "scaleX(1)" : "scaleX(0.3)", opacity: i === 0 ? 1 : 0.3 }}
+              />
+            ))}
+          </div>
+          {/* vertical progress line */}
+          <div className="relative mt-2 h-32 w-px bg-paper/15">
+            <div
+              data-progress-line
+              className="absolute inset-0 origin-top bg-champagne"
+              style={{ transform: "scaleY(0)" }}
+            />
+          </div>
+        </div>
+
+        {/* Animated chapter counter (top-right) */}
+        <div className="absolute right-5 top-8 z-30 hidden items-baseline gap-2 sm:right-8 lg:flex">
+          <span
+            ref={counterRef}
+            className="font-serif text-6xl font-light tabular-nums text-paper/20"
+          >
+            01
+          </span>
+          <span className="font-sans text-[0.55rem] uppercase tracking-wide-2 text-paper/30">
+            / {String(MILESTONES.length).padStart(2, "0")}
+          </span>
         </div>
 
         {/* Panels */}
@@ -232,8 +282,17 @@ export function Timeline() {
             className="absolute inset-0 flex items-center"
             style={{ opacity: i === 0 ? 1 : 0, zIndex: i + 1 }}
           >
-            <div className="mx-auto grid w-full max-w-[1600px] grid-cols-1 items-center gap-8 px-5 sm:px-8 lg:grid-cols-12 lg:gap-12">
-              {/* Image with clip-path iris + scale animation */}
+            {/* Giant ghost chapter number in background */}
+            <span
+              data-panel-chapter
+              className="pointer-events-none absolute right-[8%] top-[15%] z-0 font-serif text-[30vw] font-bold leading-none text-paper/[0.04] select-none"
+              style={{ opacity: i === 0 ? 0.15 : 0 }}
+            >
+              {String(i + 1).padStart(2, "0")}
+            </span>
+
+            <div className="relative z-10 mx-auto grid w-full max-w-[1600px] grid-cols-1 items-center gap-8 px-5 sm:px-8 lg:grid-cols-12 lg:gap-12">
+              {/* Image */}
               <div className="relative lg:col-span-7">
                 <div
                   data-panel-img-wrap
@@ -247,7 +306,11 @@ export function Timeline() {
                     data-panel-img
                     sizes="(max-width: 1024px) 100vw, 58vw"
                     className="object-cover object-center"
-                    style={{ transform: i === 0 ? "scale(1.07)" : "scale(1.15)", opacity: i === 0 ? 1 : 0 }}
+                    style={{
+                      transform: i === 0 ? "scale(1.10)" : "scale(1.18)",
+                      opacity: i === 0 ? 1 : 0,
+                      filter: i === 0 ? "blur(0px)" : "blur(12px)",
+                    }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-ink/50 to-transparent" />
                   <span className="absolute left-3 top-3 font-sans text-[0.5rem] uppercase tracking-wide-2 text-white/80">
@@ -256,19 +319,27 @@ export function Timeline() {
                 </div>
               </div>
 
-              {/* Text with staggered slide-up animation */}
+              {/* Text */}
               <div className="lg:col-span-5">
                 <p
                   data-panel-year
-                  className="font-sans text-[0.6rem] uppercase tracking-luxe text-champagne"
-                  style={{ transform: i === 0 ? "translateY(0)" : "translateY(40px)", opacity: i === 0 ? 1 : 0 }}
+                  className="font-serif text-6xl font-light tracking-tight text-champagne sm:text-7xl"
+                  style={{
+                    transform: i === 0 ? "scale(1)" : "scale(1.5)",
+                    opacity: i === 0 ? 1 : 0,
+                    filter: i === 0 ? "blur(0px)" : "blur(8px)",
+                  }}
                 >
                   {m.year}
                 </p>
                 <h3
                   data-panel-title
                   className="mt-3 font-serif text-5xl font-medium tracking-tight text-paper sm:text-6xl"
-                  style={{ transform: i === 0 ? "translateY(0)" : "translateY(50px)", opacity: i === 0 ? 1 : 0 }}
+                  style={{
+                    transform: i === 0 ? "translateY(0)" : "translateY(50px)",
+                    opacity: i === 0 ? 1 : 0,
+                    filter: i === 0 ? "blur(0px)" : "blur(6px)",
+                  }}
                 >
                   {m.title}
                 </h3>
@@ -291,7 +362,7 @@ export function Timeline() {
           </div>
         ))}
 
-        {/* Chapter counter */}
+        {/* Footer label */}
         <div className="pointer-events-none absolute bottom-6 left-1/2 z-30 -translate-x-1/2 font-sans text-[0.5rem] uppercase tracking-wide-2 text-paper/35">
           {MODEL.name} — The Portfolio Edition
         </div>
